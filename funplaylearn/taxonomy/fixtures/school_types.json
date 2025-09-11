@@ -1,0 +1,5 @@
+[
+  {"model": "taxonomy.schooltype", "pk": 1, "fields": {"type": "Private"}},
+  {"model": "taxonomy.schooltype", "pk": 2, "fields": {"type": "Public"}},
+  {"model": "taxonomy.schooltype", "pk": 3, "fields": {"type": "Community"}}
+]

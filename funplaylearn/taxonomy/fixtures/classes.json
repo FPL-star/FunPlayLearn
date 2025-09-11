@@ -1,0 +1,12 @@
+[
+  {"model": "taxonomy.class", "pk": 1, "fields": {"class_number": 1}},
+  {"model": "taxonomy.class", "pk": 2, "fields": {"class_number": 2}},
+  {"model": "taxonomy.class", "pk": 3, "fields": {"class_number": 3}},
+  {"model": "taxonomy.class", "pk": 4, "fields": {"class_number": 4}},
+  {"model": "taxonomy.class", "pk": 5, "fields": {"class_number": 5}},
+  {"model": "taxonomy.class", "pk": 6, "fields": {"class_number": 6}},
+  {"model": "taxonomy.class", "pk": 7, "fields": {"class_number": 7}},
+  {"model": "taxonomy.class", "pk": 8, "fields": {"class_number": 8}},
+  {"model": "taxonomy.class", "pk": 9, "fields": {"class_number": 9}},
+  {"model": "taxonomy.class", "pk": 10, "fields": {"class_number": 10}},
+]

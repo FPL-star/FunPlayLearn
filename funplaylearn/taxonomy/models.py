@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.core.exceptions import ValidationError
 
 # Note: https://docs.djangoproject.com/en/5.2/ref/models/fields/#:~:text=primary_key
 # Django will automatically add primary key fields
@@ -18,9 +18,18 @@ class Palika(models.Model):
     class Meta:
         verbose_name = "Palika"
         verbose_name_plural = "Palikas"
+        ordering = ["name"]
 
     def __str__(self):
         return f"{self.name} ({self.abbreviated_name})"
+
+    def clean(self):
+        """Custom validation to ensure abbr. names are at least two chars"""
+        super().clean()
+        if self.abbreviated_name and len(self.abbreviated_name.strip()) < 2:
+            raise ValidationError(
+                {"abbreviated_name": "Abbreviated_name must be at least 2 characters."}
+            )
 
 
 class OrganizationType(models.Model):
@@ -48,9 +57,10 @@ class OrganizationType(models.Model):
     class Meta:
         verbose_name = "Organization Type"
         verbose_name_plural = "Organization Types"
+        ordering = ["type"]
 
     def __str__(self):
-        return self.type
+        return self.get_type_display()
 
 
 class SchoolType(models.Model):
@@ -76,9 +86,10 @@ class SchoolType(models.Model):
     class Meta:
         verbose_name = "School Type"
         verbose_name_plural = "School Types"
+        ordering = ["type"]
 
     def __str__(self):
-        return self.type
+        return self.get_type_display()
 
 
 class Class(models.Model):
@@ -104,6 +115,7 @@ class Class(models.Model):
 
     class Meta:
         verbose_name_plural = "Classes"
+        ordering = ["class_number"]
 
     def __str__(self):
         return f"Class {self.class_number}"
@@ -127,6 +139,28 @@ class Weekday(models.Model):
 
     class Meta:
         verbose_name_plural = "Weekdays"
+        ordering = ["name"]
 
     def __str__(self):
         return self.name
+
+    @classmethod
+    def get_weekday_order(cls):
+        """Return weekdays in Monday-Sunday order"""
+        order = [
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday",
+            "Sunday",
+        ]
+        return cls.objects.filter(name__in=order).order_by(
+            models.Case(
+                *[
+                    models.When(name=day, then=models.Value(i))
+                    for i, day in enumerate(order)
+                ]
+            )
+        )
