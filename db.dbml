@@ -1,0 +1,221 @@
+// Schools and Team files need to be reviewed
+// See diagram with https://dbdiagram.io/d
+
+Table Palika {
+  id int [pk]
+  name varchar // Lalitpur
+  abbreviated_name varchar(6) // LLT
+}
+
+Table Organization {
+  id int [pk]
+  palika_id int [ref: > Palika.id]
+  contact_id int [ref: - Contact.id]
+  type_id int [ref: - OrganizationType.id]
+  name varchar
+  gps_coordinates point
+  // For SQLITE
+  // latitude float
+  // longigute float
+  general_location varchar // Landmark
+  active bool [default: true]
+}
+
+Table OrganizationType {
+  id int [pk]
+  type varchar [note: "enum: School, College, NGO, FPL, etc"]
+}
+
+Table SchoolType {
+  id int [pk]
+  type varchar [note: "enum: Private, Public, Community"]
+}
+
+Table SchoolToDay {
+  id int [pk]
+  school_id int [ref: > School.id]
+  weekday_id int [ref: > Weekday.id]
+}
+
+Table Weekday {
+  id int [pk]
+  name varchar
+}
+
+Table School {
+  id int [pk]
+  organization_id int [ref: - Organization.id]
+  school_type_id int [ref: > SchoolType.id]
+  class_one_fee int
+  provides_food bool
+  first_session_date date
+  start_time_first_half time
+  start_time_second_half time
+  session_duration interval
+}
+
+// Gets built every Saturday
+Table SchoolWeeklyStatus {
+  id int [pk]
+  school_id int [ref: - School.id]
+  games_id int [ref: > Game.id]
+  operating_days jsonb
+  staff_attendance jsonb // Array of FPLMember IDs
+  is_active bool [not null, default: false]
+  start_time_first_half time [null]
+  start_time_second_half time [null]
+  updated_at timestamp [default: "now()"]
+}
+
+Table Class {
+  id int [pk]
+  class int
+}
+
+Table SchoolClass {
+  id int [pk]
+  school_id int [ref: > School.id]
+  class_id int [ref: > Class.id]
+  max_students int
+}
+
+Table Role {
+  id int [pk]
+  name varchar // Intern, Fulltimer, etc.
+  organization_id int [ref: > Organization.id]
+}
+
+Table Person {
+  id int [pk]
+  role_id int [ref: > Role.id]
+  contact_id int [ref: - Contact.id]
+  first_name varchar [not null]
+  last_name varchar [not null]
+  bio text
+  gender bool
+  photo text // URL or other
+  indexes {
+    (first_name, last_name) [name: "idx_person_name"]
+    role_id [name: "idx_person_role"]
+  }
+}
+
+Table Contact {
+  id int [pk]
+  is_organization bool // Person / Organization
+  email varchar(254) // International phone number max length
+  phone varchar(15) // RFC email max length
+  address varchar
+  emergency_contact_name varchar
+  emergency_contact_phone varchar
+  emergency_contact_relationship varchar
+}
+
+Table FPLMember {
+  id int [pk]
+  person_id int [ref: > Person.id]
+  palika_id int [ref: > Palika.id]
+  updated timestamp // Set default to "now"
+  start_date date
+  active bool
+  agreement bool
+  // The following fields need a CHECK statement with active
+  leave_date date [null]
+  sim_returned bool [default: false]
+  account_closed bool [default: false]
+  certificate_issued bool [default: false]
+
+  indexes {
+    person_id [name: "idx_fpl_person"]
+    palika_id [name: "idx_fpl_palika"] 
+    active [name: "idx_fpl_active"]
+    (palika_id, active) [name: "idx_fpl_palika_active"]
+  }
+}
+
+Table PersonSensitiveData {
+  id int [pk]
+  person_id int [ref: > FPLMember.id]
+  date_of_birth date
+  blood_type varchar
+  bank_account varchar [note: "encrypted"]
+  pan_number varchar [note: "encrypted"]
+}
+
+Table Game {
+  id int [pk]
+  name varchar [unique, not  null]
+  description text
+  how_to text [note: "Step-by-step instructions", not null]
+  team_prep text [note: "Setup instructions for facilitators", not null]
+  video_url text
+  image_url text
+  challenges jsonb [note: "Array of challenges"]
+  questions jsonb [note: "Array of discussiong questions"]
+  quality_checklist jsonb [note: "Array of success criteria"]
+  materials_required jsonb [note: "Array of materials required"]
+  created_at timestamp [default: 'now()']
+  updated_at timestamp
+  is_active bool
+}
+
+// This table represents the set of
+// sessions on a given day for a 
+// given school 
+Table SessionSet {
+  id int [pk]
+  school_id int [ref: > School.id] // School where session happened
+  submitted_by int [ref: - FPLMember.id]
+  last_update_by int [ref: - FPLMember.id]
+  people_present int [ref: > FPLMember.id]
+  date date [not null]
+  staff_attendance_photo_url text
+  created_at timestamp [default: "now()"]
+  updated_at timestamp [default: "now()"]
+
+  indexes {
+    date [name: "idx_date"] // For calendar queries
+    (school_id, date) [name: "idx_session_org_date"]
+    date [name: "idx_date"] // For chrono sort
+  }
+}
+
+Table SessionSetAttendance {
+  id int [pk]
+  session_set_id int [ref: >SessionSet.id]
+  fpl_member_id int [ref: > FPLMember.id]
+}
+
+Table SessionClassAttendance { 
+  id int [pk]
+  session_id int [ref: > SessionSet.id]
+  class_id int [ref: > Class.id]
+  student_count int [not null]
+}
+
+Table Session {
+  id int [pk]
+  session_set_id int [ref: > SessionSet.id]
+  teacher_id int [ref: > Person.id]
+  class_id int [ref: > Class.id]
+  game_id int [ref: > Game.id]
+  photo_1_url text
+  photo_2_url text
+  photo_3_url text
+  rating int [note: "CHECK: rating BETWEEN 1 and 5 incl."]
+  start_time time [not null]
+  end_time time [not null]
+  notes text
+}
+
+
+Table PersonEducation {
+  id int [pk]
+  fpl_id int [ref: - FPLMember.id]
+  level varchar // School, Plus 2, BA, MA, etc.
+  field_of_study varchar
+  institution varchar
+  is_current bool [default: false] 
+}
+
+
