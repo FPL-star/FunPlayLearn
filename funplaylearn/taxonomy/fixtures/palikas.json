@@ -1,0 +1,74 @@
+[
+    {
+        "model": "taxonomy.palika",
+        "pk": 1,
+        "fields": {
+            "short_name": "llt",
+            "palika": "Lalitpur"
+        }
+    },
+    {
+        "model": "taxonomy.palika",
+        "pk": 2,
+        "fields": {
+            "short_name": "somu",
+            "palika": "Swoyambhu"
+        }
+    },
+    {
+        "model": "taxonomy.palika",
+        "pk": 3,
+        "fields": {
+            "short_name": "htd",
+            "palika": "Hetauda"
+        }
+    },
+    {
+        "model": "taxonomy.palika",
+        "pk": 4,
+        "fields": {
+            "short_name": "chbl",
+            "palika": "Chabahil"
+        }
+    },
+    {
+        "model": "taxonomy.palika",
+        "pk": 5,
+        "fields": {
+            "short_name": "kilkir",
+            "palika": "Kalanki-Kirtipur"
+        }
+    },
+    {
+        "model": "taxonomy.palika",
+        "pk": 6,
+        "fields": {
+            "short_name": "bsnt",
+            "palika": "Basantapur"
+        }
+    },
+    {
+        "model": "taxonomy.palika",
+        "pk": 7,
+        "fields": {
+            "short_name": "kotban",
+            "palika": "Koteshwor-Baneshwor"
+        }
+    },
+    {
+        "model": "taxonomy.palika",
+        "pk": 8,
+        "fields": {
+            "short_name": "bhkt",
+            "palika": "Bhaktapur"
+        }
+    },
+    {
+        "model": "taxonomy.palika",
+        "pk": 9,
+        "fields": {
+            "short_name": "cpg",
+            "palika": "Chapagaun"
+        }
+    }
+]

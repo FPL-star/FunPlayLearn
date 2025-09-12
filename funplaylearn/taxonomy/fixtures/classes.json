@@ -8,5 +8,5 @@
   {"model": "taxonomy.class", "pk": 7, "fields": {"class_number": 7}},
   {"model": "taxonomy.class", "pk": 8, "fields": {"class_number": 8}},
   {"model": "taxonomy.class", "pk": 9, "fields": {"class_number": 9}},
-  {"model": "taxonomy.class", "pk": 10, "fields": {"class_number": 10}},
+  {"model": "taxonomy.class", "pk": 10, "fields": {"class_number": 10}}
 ]

@@ -10,25 +10,27 @@ class Palika(models.Model):
     Utility model to track administrative divisions
     """
 
-    name = models.CharField(max_length=100, unique=True, help_text="e.g., Latipur")
-    abbreviated_name = models.CharField(
-        max_length=6, unique=True, help_text="e.g., LTT"
+    palika = models.CharField(
+        "Palika", max_length=100, unique=True, help_text="e.g., Latipur"
+    )
+    short_name = models.CharField(
+        "Abbreviation", max_length=6, unique=True, help_text="e.g., LTT"
     )
 
     class Meta:
         verbose_name = "Palika"
         verbose_name_plural = "Palikas"
-        ordering = ["name"]
+        ordering = ["palika"]
 
     def __str__(self):
-        return f"{self.name} ({self.abbreviated_name})"
+        return f"{self.palika.title()} ({self.short_name.upper()})"
 
     def clean(self):
         """Custom validation to ensure abbr. names are at least two chars"""
         super().clean()
-        if self.abbreviated_name and len(self.abbreviated_name.strip()) < 2:
+        if self.short_name and len(self.short_name.strip()) < 2:
             raise ValidationError(
-                {"abbreviated_name": "Abbreviated_name must be at least 2 characters."}
+                {"short_name": "Short name must be at least 2 characters."}
             )
 
 
@@ -139,28 +141,7 @@ class Weekday(models.Model):
 
     class Meta:
         verbose_name_plural = "Weekdays"
-        ordering = ["name"]
+        ordering = ["pk"]
 
     def __str__(self):
         return self.name
-
-    @classmethod
-    def get_weekday_order(cls):
-        """Return weekdays in Monday-Sunday order"""
-        order = [
-            "Monday",
-            "Tuesday",
-            "Wednesday",
-            "Thursday",
-            "Friday",
-            "Saturday",
-            "Sunday",
-        ]
-        return cls.objects.filter(name__in=order).order_by(
-            models.Case(
-                *[
-                    models.When(name=day, then=models.Value(i))
-                    for i, day in enumerate(order)
-                ]
-            )
-        )
