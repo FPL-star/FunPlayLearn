@@ -10,17 +10,17 @@ class Palika(models.Model):
     Utility model to track administrative divisions
     """
 
+    class Meta:
+        verbose_name = "Palika"
+        verbose_name_plural = "Palikas"
+        ordering = ["palika"]
+
     palika = models.CharField(
         "Palika", max_length=100, unique=True, help_text="e.g., Latipur"
     )
     short_name = models.CharField(
         "Abbreviation", max_length=6, unique=True, help_text="e.g., LTT"
     )
-
-    class Meta:
-        verbose_name = "Palika"
-        verbose_name_plural = "Palikas"
-        ordering = ["palika"]
 
     def __str__(self):
         return f"{self.palika.title()} ({self.short_name.upper()})"
@@ -44,6 +44,11 @@ class OrganizationType(models.Model):
         FPL
     """
 
+    class Meta:
+        verbose_name = "Organization Type"
+        verbose_name_plural = "Organization Types"
+        ordering = ["type"]
+
     class OrganizationChoices(models.TextChoices):
         SCHOOL = "school", "School"
         COLLEGE = "college", "College"
@@ -55,11 +60,6 @@ class OrganizationType(models.Model):
         unique=True,
         help_text="Organization Type: School, College, NGO, FPL",
     )
-
-    class Meta:
-        verbose_name = "Organization Type"
-        verbose_name_plural = "Organization Types"
-        ordering = ["type"]
 
     def __str__(self):
         return self.get_type_display()
@@ -74,6 +74,11 @@ class SchoolType(models.Model):
         Community
     """
 
+    class Meta:
+        verbose_name = "School Type"
+        verbose_name_plural = "School Types"
+        ordering = ["type"]
+
     class SchoolChoices(models.TextChoices):
         PRIVATE = "private", "Private"
         PUBLIC = "public", "Public"
@@ -85,11 +90,6 @@ class SchoolType(models.Model):
         help_text="School type: Private, Public, Community",
     )
 
-    class Meta:
-        verbose_name = "School Type"
-        verbose_name_plural = "School Types"
-        ordering = ["type"]
-
     def __str__(self):
         return self.get_type_display()
 
@@ -98,6 +98,10 @@ class Class(models.Model):
     """
     Link table for class (i.e. grade) levels
     """
+
+    class Meta:
+        verbose_name_plural = "Classes"
+        ordering = ["class_number"]
 
     class ClassChoices(models.IntegerChoices):
         CLASS_1 = 1, "Class 1"
@@ -115,10 +119,6 @@ class Class(models.Model):
         choices=ClassChoices.choices, unique=True, help_text="Class/Grade level (1-10)"
     )
 
-    class Meta:
-        verbose_name_plural = "Classes"
-        ordering = ["class_number"]
-
     def __str__(self):
         return f"Class {self.class_number}"
 
@@ -127,6 +127,10 @@ class Weekday(models.Model):
     """
     Days of the week link table
     """
+
+    class Meta:
+        verbose_name_plural = "Weekdays"
+        ordering = ["pk"]
 
     class DayChoices(models.TextChoices):
         MONDAY = "Monday", "Monday"
@@ -138,10 +142,6 @@ class Weekday(models.Model):
         SUNDAY = "Sunday", "Sunday"
 
     name = models.CharField(max_length=10, choices=DayChoices.choices, unique=True)
-
-    class Meta:
-        verbose_name_plural = "Weekdays"
-        ordering = ["pk"]
 
     def __str__(self):
         return self.name
