@@ -1,0 +1,77 @@
+{% load static %}
+<head>
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+	<link rel="stylesheet" href="{% static 'css/about_us.css' %}">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<header class="headbar">
+    <nav class="navbar" aria-label="breadcrumb">
+        <div class="headnav-1">
+            <div class="headnav-2 child">
+                <!-- FPL logo -->
+                <div class="headnav-3">
+                    <a href="{% url 'home' %}">
+                        <img src="{% static 'image/logo.png' %}" 
+                             alt="Fun Play Learn Logo" 
+                             class="fpllogo">
+                    </a>
+                    <div class="headnav-4">
+                        <div class="headnav-5">
+                            <h2>Follow us:</h2>
+                        </div>
+                        <div class="headnav-6 sm">
+                            <a href="#" class="social-icon" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#" class="social-icon" title="Instagram"><i class="fab fa-instagram"></i></a>
+                            <a href="#" class="social-icon" title="Tiktok"><i class="fab fa-tiktok"></i></a>
+                            <a href="#" class="social-icon" title="Youtube"><i class="fab fa-youtube"></i></a>
+                            <a href="#" class="social-icon" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Menu -->
+            <div class="headnav-8 child">
+                <a href="{% url 'home' %}" class="dropbtn">Home</a>
+                <a href="{% url 'about_us' %}" class="dropbtn">About us</a>
+                <a href="#" class="dropbtn">Our People</a>
+
+                <div class="dropdown">
+                    <a href="#" class="dropbtn">Program</a>
+                    <div class="dropdown-content">
+                        <a href="#">Our Games</a>
+                        <a href="#">Sessions</a>
+                        <a href="#">Quality</a>
+                        <a href="#">Stats</a>
+                        <a href="#">Our Partners</a>
+                        <a href="#">School Plans</a>
+                    </div>
+                </div>
+
+                <a href="{% url 'resources' %}" class="dropbtn">Resources</a>
+            </div>
+
+            <div class="toright">
+                <div class="headnav-7 child">
+                    <a href="#" 
+                       class="btn-volunteer" 
+                       target="_blank" 
+                       title="Join Us as a Volunteer">Join Us</a>
+                </div> 
+
+                <div class="headnav-9 child">
+                    <div class="search-container">
+                        <input type="text" id="searchInput" class="search-input" placeholder="Search..." />
+                        <div id="searchResults" class="search-results"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+<main>
+    {% block content %}
+    <!-- child templates will insert content here -->
+    {% endblock %}
+</main>

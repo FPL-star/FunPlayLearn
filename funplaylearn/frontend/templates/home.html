@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="content">
+	<!-- Main Content Section Starts -->
+	<div class="main-content">
+		<div class="wrapper-b">
+			<div class="mainbody-1">
+				<div class="child-1">
+					<h2>OUR VISION</h2>
+					<p class="p2"> To see every Nepali child grow up in a learning environment where play sparks <span class="yellow_highlights">joy, curiosity, and wonder</span>—shaping a generation of bold questioners and fearless explorers.
+					</p>
+					<div class="kids-1">
+						<h2>OUR MISSION</h2>
+						<p class="p2">
+							 To ignite a love for learning in every child by making play the foundation of education. Rather than teaching, we aim to inspire—creating joyful, low-cost, and inclusive experiences that awaken  <span class="yellow_highlights">curiosity, confidence, and collaboration.</span> Through our network of trained young volunteers and strong partnerships with schools, we deliver structured play sessions that empower children to <span class="yellow_highlights">explore, question, and grow on their own terms.</span> Over time, we work to shift the responsibility of nurturing playful learning to the communities themselves—by collaborating with and equipping teachers, parents, and local leaders to carry forward and sustain this approach.
+						</p>
+					</div>
+				</div>
+			
+			<div class="number-row">
+				<div class="number-item">
+					
+					<p class="big-number">21K</p>
+					<p class="bottom-text">Children Reached</p>
+				</div>
+				<div class="number-item">
+					
+					<p class="big-number">200+</p>
+					<p class="bottom-text">Schools Reached</p>
+				</div>
+				<div class="number-item">
+					
+					<p class="big-number">500+</p>
+					<p class="bottom-text">Funmakers Impacted</p>
+				</div>
+				<div class="number-item">
+					
+					<p class="big-number">Rs25</p>
+					<p class="bottom-text">Per-Child Per-Session</p>
+				</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	</div>
+	<div class="about-us">
+		<div class="aby-us-yt">
+			<iframe src="https://www.youtube.com/embed/7hj0bENm4b4" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen class="index"></iframe>
+		</div>
+		<div class="text">
+			<h2>OUR APPROACH</h2>
+			<p class="p3">At FunPlayLearn, we believe that <span class ="red_highlights">play</span> is one of the most effective ways for children to learn. We recognize that traditional teaching methods often miss the fun and engaging aspect of learning. That's why we introduce <span class ="blue_highlights">exciting games</span> into classrooms that not only entertain but also help children develop essential skills like math, problem-solving, and spatial awareness. We primarily focus on children in grades 1-4, offering a new game each week, with our sessions running from 12 to 48 weeks.</p>
+
+			<p class="p3">Our goal is to integrate this playful learning approach into schools. By working closely with teachers and schools, we aim to gradually shift the ownership of these activities to the schools themselves, ensuring that playful learning becomes a permanent and valued part of their teaching strategies.</p>
+		</div>
+		
+	</div>
+	<h2 class ="left-format">KEY LEADERS</h2>
+	<div class="mainbody-2">
+		<div class="card-1">
+		<a href="people/{{ board }}.html">
+                    <img src="people/image/{{ board }}.jpg" alt="{{ board }}" class="img-square-1" loading="lazy">
+                    <div class="card-text">
+						<span class ="blue_highlights"> {{ board }} (Chairperson)</span>
+                    </div>
+                </a>
+		</div>
+		<div class="card-1">
+			<a href="people/{{ founder }}.html">
+				<img src="people/image/{{ founder }}.jpg" alt="{{ founder }}" class="img-square-1" loading="lazy">
+				<div class="card-text">
+					<span class ="red_highlights">{{ founder }} (Founder)</span>
+				</div>
+			</a>
+		</div>
+		<div class="card-1">
+			<a href="people/{{ executive }}.html">
+				<img src="people/image/{{ executive }}.jpg" alt="{{ executive }}" class="img-square-1" loading="lazy">
+				<div class="card-text">
+					<span class ="yellow_highlights">{{ executive }} (Executive)</span>
+				</div>
+			</a>
+		</div>
+		<div class="card-1">
+			<a href="people/{{ leader }}.html">
+				<img src="people/image/{{ leader }}.jpg" alt="{{ leader }}" class="img-square-1" loading="lazy">
+				<div class="card-text">
+					<span class ="green_highlights">{{ leader }} (Executive)</span>
+				</div>
+			</a>
+		</div>
+	</div>
+{% endblock %}
