@@ -1,0 +1,451 @@
+
+* {
+    margin: 0;
+    padding: 0;
+    /* font-family: Arial, sans-serif; */
+    font-family: 'Inter', sans-serif;
+}
+  .page-content {
+	width: 90%;
+	margin: 0 auto;
+	display: flex;
+	flex-direction: column;
+	gap: 40px; /* Optional vertical space between folds */
+  }
+  .fold-1 {
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+	padding: 20px;
+  }
+  
+  /* General Flex Row Wrapper */
+  .flex-row {
+	display: flex;
+	gap: 20px;
+  }
+  
+  /* Row 1: 30% video and 70% description, both 40vh tall */
+  .row-1 .video-box {
+	width: 40%;
+	height: 40vh;
+	
+  }
+  
+  .row-1 .description-1 {
+	width: 60%;
+	height: 40vh;
+  }
+  
+  .video-box iframe {
+	width: 100%;
+	height: 100%;
+	border: none;
+  }
+  
+  /* Description Boxes */
+  .description {
+	background-color: white; /* light gray-blue */
+	padding: 20px;
+	padding-top: 5px;
+	box-sizing: border-box;
+	border-radius: 20px;
+	
+  }
+  .description p{
+	text-align: justify;
+	font-size: 1rem;
+  }
+  
+  /* Row 2: Even split for description and gallery */
+  
+  .row-2 .description-2 {
+	flex: 1;
+	margin-top: 80px;
+  }
+  
+  .row-2 .gallery {
+	margin-top: 80px;
+	width: 400px;      /* Set square width */
+	height: 400px;     /* Set square height */
+	display: flex;
+	overflow-x: auto;
+	scroll-snap-type: x mandatory;
+	scroll-behavior: smooth;
+	gap: 0;
+	border-radius: 8px;
+	box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .gallery img {
+	flex: 0 0 100%;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	scroll-snap-align: start;
+	border-radius: 8px;
+  }
+  .fold-2 {
+	display: flex;
+	height: 90vh;
+	gap: 20px;
+	padding-bottom: 20px;
+  }
+  
+  /* Left column */
+  .fold-2-left {
+	width: 30vw;
+	height: 100vh;
+	display: flex;
+	flex-direction: column;
+	padding: 10px;
+	box-sizing: border-box;
+	background-color: lightskyblue;
+	border-radius: 8px;
+	overflow-y: scroll;
+  }
+  
+  /* Title at the top */
+  .left-title {
+	font-size: 1.5rem;
+	font-weight: bold;
+	margin-bottom: 5px;
+	text-align: center;
+	color: black;
+  }
+  
+  /* Common box styling */
+  .left-box {
+	background-color: #e4e4e4;
+	border-radius: 6px;
+	display: flex;
+	height: auto;
+	align-items: top;
+	justify-content: center;
+	font-size: 0.9rem;
+	margin: 5px; /* Margin on all sides */
+	flex-shrink: 0;
+	flex-wrap: wrap;
+  }
+  .left-box p{
+	margin: 3px;
+	padding: 5px;
+	text-align: justify;
+  }
+  
+  /* You can adjust sizing here */
+  
+  /* Right column */
+  .fold-2-right {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	height: fit-content;
+	padding:10px;
+	margin-top: 0px;
+	background-color: #d0eaff;
+  }
+  
+  .fold-2-box {
+	height: 32vh;
+	border-radius: 8px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 10px 20px;
+	gap: 20px;
+	box-sizing: border-box;
+  }
+  
+  /* Left text */
+  .box-text {
+	flex: 1;
+	font-size: 1rem;
+	text-align: justify;
+  }
+  
+  /* Right image */
+  .box-image {
+	width: auto;
+	height: 80%;
+	aspect-ratio: 1 / 1; /* forces square */
+	object-fit: cover;
+	border-radius: 6px;
+  }
+  .fold-3 {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	box-sizing: border-box;
+	background-color: #ffffff; /* white page background */
+  }
+  
+  
+  .section-title {
+	font-size: 1.5rem;
+	font-weight: bold;
+	margin-bottom: 10px;
+	text-align: center;
+	color: #374151; /* dark gray-blue */
+  }
+  
+  /* Right side: Horizontal image row with captions */
+  .fold-3-gallery-section {
+	flex: 1;  /* takes remaining space (~70%) */
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	background-color:lightgray;
+	border-radius: 8px;
+	padding: 15px;
+	margin-bottom: 10px;
+  }
+  
+  .image-row {
+	display: flex;
+	justify-content: space-between;
+	gap: 10px;
+	width: 100%;
+  }
+  
+  .image-with-caption {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	flex: 1;
+	background-color: #ffffff; /* white boxes for images */
+	border-radius: 8px;
+	padding: 8px;
+	box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  }
+  
+  .image-with-caption img {
+	width: 100%;
+	aspect-ratio: 1 / 1;
+	object-fit: cover;
+	border-radius: 6px;
+	border: 1px solid #e2e8f0;
+  }
+  
+  .caption {
+	margin-top: 8px;
+	font-size: 1rem;
+	text-align: center;
+	color: #4b5563; /* medium gray */
+  }
+  .fold-3-bottom{
+	position: relative;
+	width: 90%;
+	height: 30vh;
+	background: url('../image/weback.jpg') center/cover no-repeat;
+	display: flex;
+	align-items: center;
+	padding-left: 5%;
+	padding-right: 5%;
+	margin-top: 10px; /* ✅ This moves the entire section down */
+	margin-bottom: 10px;
+	z-index: 1;
+  }
+.hero-text {
+  color: white;
+  z-index: 2;
+}
+
+.hero-text h2 {
+  font-size: 4rem;
+}
+
+.hero-text p {
+  font-size: 1rem;
+}
+.volunteer-button {
+	display: inline-block;
+	padding: 10px 20px;
+	color: white;
+	background-color: transparent;
+	border: 2px solid white;
+	text-decoration: none;
+	border-radius: 5px;
+	transition: background-color 0.3s, color 0.3s;
+	
+  }
+.learn-more-button {
+	color: #007BFF;
+	font-weight: 600;
+	text-decoration: none;
+	cursor: pointer;
+	font-size: 1rem;
+	transition: text-decoration 0.3s ease, color 0.3s ease;
+  }
+  
+  .learn-more-button:hover {
+	text-decoration: underline;
+	color: #0056b3;
+  }
+  
+ 
+ 
+  @media (max-width: 768px) {
+  
+	.page-content {
+	  width: 100%;
+	  gap: 30px;
+	}
+  
+	/* Fold 1 - stack rows vertically, full width */
+	.fold-1 {
+	  padding: 10px;
+	  gap: 15px;
+	}
+  
+	.row-1 {
+	  flex-direction: column;
+	}
+	.row-1 .video-box{
+		width: 100%;
+	  height: 25vh; /* reduce height */
+	  order: 1;
+	}
+	.row-1 .description-1 {
+	  width: 100%;
+	  height: auto; /* reduce height */
+	  order: 2;
+	}
+  
+	.row-2 {
+	  flex-direction: column;
+	  gap: 15px;
+	}
+	.row-2 .description-2 {
+	  width: 100%;
+	  order: 6;
+	  margin-top: 10px;
+	}
+	.row-2 .gallery {
+	  width: 100%;
+	  height: 300px; /* smaller square */
+	  order: 5;
+	  padding: 0px;
+	  margin-top: 10px;
+	}
+	.gallery img {
+	  height: 100%;
+	}
+  
+	/* Fold 2 */
+	.fold-2 {
+	  flex-direction: column;
+	  height: auto;
+	  gap: 15px;
+	  padding-bottom: 10px;
+	}
+	.fold-2-left {
+	  width: 100%;
+	  height: auto;
+	  padding: 10px 5px;
+	  order: 3;
+	}
+	.fold-2-right {
+	  width: 100%;
+	  height: auto;
+	  padding: 10px 5px;
+	  order: 4;
+	}
+	.fold-2-left {
+		flex-direction: column; /* stack vertically */
+		height: auto;
+		padding: 10px 5px;
+	  }
+	  
+	  .left-title {
+		width: 100%; /* full width */
+		flex-shrink: 0;
+		margin-bottom: 10px;
+		text-align: center;
+	  }
+	  
+	  /* Wrap the boxes inside a container to control layout */
+	  .left-box-container {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 10px;
+		justify-content: center;
+	  }
+	  
+	  /* Adjust the boxes inside this container */
+	  .left-box {
+		flex: 1 1 45%; /* roughly two per row */
+		height: 80px;
+		margin: 0; /* remove margin if any to use gap */
+	  }
+	/* Smaller left boxes stacked horizontally */
+	.left-box {
+	  margin: 5px 0;
+	  flex: 1 1 45%; /* roughly two per row */
+	  height: 80px;
+	}
+	.fold-2-right {
+	  flex-direction: column;
+	  height: auto;
+	}
+	.fold-2-box {
+	  height: auto;
+	  flex-direction: column;
+	  padding: 10px;
+	}
+	.box-text {
+	  font-size: 0.9rem;
+	  margin-bottom: 10px;
+	}
+	.box-image {
+	  width: 40%;
+	  height: auto;
+	  aspect-ratio: auto;
+	  border-radius: 6px;
+	}
+  
+	/* Fold 3 */
+	.fold-3-top {
+	  flex-direction: column;
+	  height: auto;
+	}
+	.fold-3-grid-section {
+	  flex: none;
+	  width: 100%;
+	  height: auto;
+	  padding: 10px 0;
+	}
+	.image-grid {
+	  width: 100%;
+	  aspect-ratio: auto;
+	  grid-template-columns: repeat(2, 1fr);
+	  grid-template-rows: auto;
+	}
+	.fold-3-gallery-section {
+	  width: 100%;
+	  height: auto;
+	  padding: 10px 0;
+	}
+	.image-row {
+	  flex-direction: column;
+	  gap: 15px;
+	}
+	.image-with-caption {
+	  width: 90%;
+	  flex: none;
+	  margin-left: 3%;
+	}
+	.image-with-caption img {
+	  width: 100%;
+	  aspect-ratio: auto;
+	}
+  
+	.fold-3-bottom {
+	  width: 100%;
+		height: auto;
+	  padding: 20px 10px;
+	  font-size: 1.5rem;
+	}
+  }
+  
