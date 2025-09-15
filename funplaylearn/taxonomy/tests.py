@@ -73,38 +73,35 @@ class OrganizationTypeModelTest(TestCase):
 
     def test_organization_type_creation(self):
         """Test successful organization type creation"""
-        org_type = OrganizationType.objects.create(
-            type=OrganizationType.OrganizationChoices.SCHOOL
-        )
-        self.assertEqual(org_type.type, "school")
-        self.assertEqual(str(org_type), "School")  # Display value
-
-    def test_organization_type_choices(self):
-        """Test that only valid choices are accepted"""
-        # Valid choice
-        org_type = OrganizationType.objects.create(
-            type=OrganizationType.OrganizationChoices.NGO
-        )
-        self.assertEqual(org_type.type, "ngo")
+        org_type = OrganizationType.objects.create(name="School")
+        self.assertEqual(org_type.name, "School")
+        self.assertEqual(str(org_type), "School")
 
     def test_organization_type_unique(self):
         """Test that organization types must be unique"""
-        OrganizationType.objects.create(
-            type=OrganizationType.OrganizationChoices.SCHOOL
-        )
+        OrganizationType.objects.create(name="School")
 
         with self.assertRaises(IntegrityError):
-            OrganizationType.objects.create(
-                type=OrganizationType.OrganizationChoices.SCHOOL
-            )
+            OrganizationType.objects.create(name="School")
 
-    def test_organization_type_all_choices_valid(self):
-        """Test all defined choices can be created"""
-        choices = OrganizationType.OrganizationChoices
+    def test_organization_type_ordering(self):
+        """Test default ordering by name"""
+        OrganizationType.objects.create(name="School")
+        OrganizationType.objects.create(name="College")
+        OrganizationType.objects.create(name="NGO")
 
-        for choice_value, choice_label in choices.choices:
-            org_type = OrganizationType.objects.create(type=choice_value)
-            self.assertEqual(org_type.get_type_display(), choice_label)
+        org_types = list(OrganizationType.objects.all())
+        self.assertEqual(org_types[0].name, "College")
+        self.assertEqual(org_types[1].name, "NGO")
+        self.assertEqual(org_types[2].name, "School")
+
+    def test_organization_type_max_length(self):
+        """Test field length constraints"""
+        # Test name max length (50 chars)
+        long_name = "A" * 51
+        org_type = OrganizationType.objects.create(name=long_name)
+        with self.assertRaises(ValidationError):
+            org_type.full_clean()
 
 
 class SchoolTypeModelTest(TestCase):
@@ -112,24 +109,35 @@ class SchoolTypeModelTest(TestCase):
 
     def test_school_type_creation(self):
         """Test successful school type creation"""
-        school_type = SchoolType.objects.create(type=SchoolType.SchoolChoices.PRIVATE)
-        self.assertEqual(school_type.type, "private")
+        school_type = SchoolType.objects.create(name="Private")
+        self.assertEqual(school_type.name, "Private")
         self.assertEqual(str(school_type), "Private")
 
     def test_school_type_unique(self):
         """Test that school types must be unique"""
-        SchoolType.objects.create(type=SchoolType.SchoolChoices.PUBLIC)
+        SchoolType.objects.create(name="Public")
 
         with self.assertRaises(IntegrityError):
-            SchoolType.objects.create(type=SchoolType.SchoolChoices.PUBLIC)
+            SchoolType.objects.create(name="Public")
 
-    def test_all_school_choices_valid(self):
-        """Test all defined school choices can be created"""
-        choices = SchoolType.SchoolChoices
+    def test_school_type_ordering(self):
+        """Test default ordering by name"""
+        SchoolType.objects.create(name="Public")
+        SchoolType.objects.create(name="Community")
+        SchoolType.objects.create(name="Private")
 
-        for choice_value, choice_label in choices.choices:
-            school_type = SchoolType.objects.create(type=choice_value)
-            self.assertEqual(school_type.get_type_display(), choice_label)
+        school_types = list(SchoolType.objects.all())
+        self.assertEqual(school_types[0].name, "Community")
+        self.assertEqual(school_types[1].name, "Private")
+        self.assertEqual(school_types[2].name, "Public")
+
+    def test_school_type_max_length(self):
+        """Test field length constraints"""
+        # Test name max length (50 chars)
+        long_name = "A" * 51
+        school_type = SchoolType.objects.create(name=long_name)
+        with self.assertRaises(ValidationError):
+            school_type.full_clean()
 
 
 class ClassModelTest(TestCase):
@@ -148,19 +156,12 @@ class ClassModelTest(TestCase):
         with self.assertRaises(IntegrityError):
             Class.objects.create(class_number=1)
 
-    def test_class_choices_validation(self):
-        """Test that only valid class numbers are accepted"""
-        # Valid choice
-        class_obj = Class.objects.create(class_number=Class.ClassChoices.CLASS_10)
-        self.assertEqual(class_obj.class_number, 10)
-
-    def test_all_class_choices_valid(self):
-        """Test all defined class choices can be created"""
-        choices = Class.ClassChoices
-
-        for choice_value, choice_label in choices.choices:
-            class_obj = Class.objects.create(class_number=choice_value)
-            self.assertEqual(str(class_obj), choice_label)
+    def test_class_positive_integer(self):
+        """Test that class_number accepts positive integers"""
+        # Valid positive integers
+        for i in range(1, 11):
+            class_obj = Class.objects.create(class_number=i)
+            self.assertEqual(class_obj.class_number, i)
 
     def test_class_ordering(self):
         """Test classes are ordered by class_number"""
@@ -179,21 +180,33 @@ class WeekdayModelTest(TestCase):
 
     def test_weekday_creation(self):
         """Test successful weekday creation"""
-        weekday = Weekday.objects.create(name=Weekday.DayChoices.MONDAY)
+        weekday = Weekday.objects.create(name="Monday")
         self.assertEqual(weekday.name, "Monday")
         self.assertEqual(str(weekday), "Monday")
 
     def test_weekday_unique(self):
         """Test that weekday names must be unique"""
-        Weekday.objects.create(name=Weekday.DayChoices.FRIDAY)
+        Weekday.objects.create(name="Friday")
 
         with self.assertRaises(IntegrityError):
-            Weekday.objects.create(name=Weekday.DayChoices.FRIDAY)
+            Weekday.objects.create(name="Friday")
 
-    def test_all_weekday_choices_valid(self):
-        """Test all defined weekday choices can be created"""
-        choices = Weekday.DayChoices
+    def test_weekday_max_length(self):
+        """Test field length constraints"""
+        # Test name max length (10 chars)
+        long_name = "A" * 11
+        weekday = Weekday.objects.create(name=long_name)
+        with self.assertRaises(ValidationError):
+            weekday.full_clean()
 
-        for choice_value, choice_label in choices.choices:
-            weekday = Weekday.objects.create(name=choice_value)
-            self.assertEqual(weekday.name, choice_label)
+    def test_weekday_ordering(self):
+        """Test weekdays are ordered by pk (insertion order)"""
+        monday = Weekday.objects.create(name="Monday")
+        friday = Weekday.objects.create(name="Friday")
+        tuesday = Weekday.objects.create(name="Tuesday")
+
+        weekdays = list(Weekday.objects.all())
+        # Should be ordered by pk (insertion order)
+        self.assertEqual(weekdays[0], monday)
+        self.assertEqual(weekdays[1], friday)
+        self.assertEqual(weekdays[2], tuesday)
