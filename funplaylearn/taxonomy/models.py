@@ -47,16 +47,10 @@ class OrganizationType(models.Model):
     class Meta:
         verbose_name = "Organization Type"
         verbose_name_plural = "Organization Types"
-        ordering = ["type"]
+        ordering = ["name"]
 
-    class OrganizationChoices(models.TextChoices):
-        SCHOOL = "school", "School"
-        COLLEGE = "college", "College"
-        NGO = "ngo", "NGO"
-        FPL = "fpl", "FPL"
-
-    type = models.CharField(
-        choices=OrganizationChoices.choices,
+    name = models.CharField(
+        max_length=50,
         unique=True,
         help_text="Organization Type: School, College, NGO, FPL",
     )
@@ -77,15 +71,10 @@ class SchoolType(models.Model):
     class Meta:
         verbose_name = "School Type"
         verbose_name_plural = "School Types"
-        ordering = ["type"]
+        ordering = ["name"]
 
-    class SchoolChoices(models.TextChoices):
-        PRIVATE = "private", "Private"
-        PUBLIC = "public", "Public"
-        COMMUNITY = "community", "Community"
-
-    type = models.CharField(
-        choices=SchoolChoices.choices,
+    name = models.CharField(
+        max_length=50,
         unique=True,
         help_text="School type: Private, Public, Community",
     )
@@ -103,20 +92,8 @@ class Class(models.Model):
         verbose_name_plural = "Classes"
         ordering = ["class_number"]
 
-    class ClassChoices(models.IntegerChoices):
-        CLASS_1 = 1, "Class 1"
-        CLASS_2 = 2, "Class 2"
-        CLASS_3 = 3, "Class 3"
-        CLASS_4 = 4, "Class 4"
-        CLASS_5 = 5, "Class 5"
-        CLASS_6 = 6, "Class 6"
-        CLASS_7 = 7, "Class 7"
-        CLASS_8 = 8, "Class 8"
-        CLASS_9 = 9, "Class 9"
-        CLASS_10 = 10, "Class 10"
-
     class_number = models.PositiveIntegerField(
-        choices=ClassChoices.choices, unique=True, help_text="Class/Grade level (1-10)"
+        unique=True, help_text="Class/Grade level (1-10)"
     )
 
     def __str__(self):
@@ -132,16 +109,7 @@ class Weekday(models.Model):
         verbose_name_plural = "Weekdays"
         ordering = ["pk"]
 
-    class DayChoices(models.TextChoices):
-        MONDAY = "Monday", "Monday"
-        TUESDAY = "Tuesday", "Tuesday"
-        WEDNESDAY = "Wednesday", "Wednesday"
-        THURSDAY = "Thursday", "Thursday"
-        FRIDAY = "Friday", "Friday"
-        SATURDAY = "Saturday", "Saturday"
-        SUNDAY = "Sunday", "Sunday"
-
-    name = models.CharField(max_length=10, choices=DayChoices.choices, unique=True)
+    name = models.CharField(max_length=10, unique=True)
 
     def __str__(self):
         return self.name
