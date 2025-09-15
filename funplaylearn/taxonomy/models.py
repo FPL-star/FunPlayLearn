@@ -56,7 +56,7 @@ class OrganizationType(models.Model):
     )
 
     def __str__(self):
-        return self.get_type_display()
+        return self.name
 
 
 class SchoolType(models.Model):
@@ -80,7 +80,7 @@ class SchoolType(models.Model):
     )
 
     def __str__(self):
-        return self.get_type_display()
+        return self.name
 
 
 class Class(models.Model):
