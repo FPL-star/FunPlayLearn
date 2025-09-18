@@ -1,48 +1,48 @@
 [
   {
-    "model": "taxonomy.weekday",
+    "model": "core.weekday",
     "pk": 1,
     "fields": {
       "name": "Monday"
     }
   },
   {
-    "model": "taxonomy.weekday",
+    "model": "core.weekday",
     "pk": 2,
     "fields": {
       "name": "Tuesday"
     }
   },
   {
-    "model": "taxonomy.weekday",
+    "model": "core.weekday",
     "pk": 3,
     "fields": {
       "name": "Wednesday"
     }
   },
   {
-    "model": "taxonomy.weekday",
+    "model": "core.weekday",
     "pk": 4,
     "fields": {
       "name": "Thursday"
     }
   },
   {
-    "model": "taxonomy.weekday",
+    "model": "core.weekday",
     "pk": 5,
     "fields": {
       "name": "Friday"
     }
   },
   {
-    "model": "taxonomy.weekday",
+    "model": "core.weekday",
     "pk": 6,
     "fields": {
       "name": "Saturday"
     }
   },
   {
-    "model": "taxonomy.weekday",
+    "model": "core.weekday",
     "pk": 7,
     "fields": {
       "name": "Sunday"

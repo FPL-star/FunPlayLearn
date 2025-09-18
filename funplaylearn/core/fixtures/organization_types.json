@@ -1,0 +1,7 @@
+[
+  {"model": "core.organizationtype", "pk": 1, "fields": {"type": "School"}},
+  {"model": "core.organizationtype", "pk": 2, "fields": {"type": "College"}},
+  {"model": "core.organizationtype", "pk": 3, "fields": {"type": "NGO"}},
+  {"model": "core.organizationtype", "pk": 4, "fields": {"type": "FPL"}},
+  {"model": "core.organizationtype", "pk": 5, "fields": {"type": "Community Center"}}
+]

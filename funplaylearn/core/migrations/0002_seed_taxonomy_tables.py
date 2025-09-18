@@ -5,16 +5,16 @@
 from django.db import migrations
 
 
-def create_taxonomy_data(apps, schema_editor):
+def create_core_data(apps, schema_editor):
     """
-    Forward migration: Create initial taxonomy data
+    Forward migration: Create initial core data
     """
     # Get model references
-    Palika = apps.get_model("taxonomy", "Palika")
-    OrganizationType = apps.get_model("taxonomy", "OrganizationType")
-    SchoolType = apps.get_model("taxonomy", "SchoolType")
-    Class = apps.get_model("taxonomy", "Class")
-    Weekday = apps.get_model("taxonomy", "Weekday")
+    Palika = apps.get_model("core", "Palika")
+    OrganizationType = apps.get_model("core", "OrganizationType")
+    SchoolType = apps.get_model("core", "SchoolType")
+    Class = apps.get_model("core", "Class")
+    Weekday = apps.get_model("core", "Weekday")
 
     # Create Palikas (replace with your actual data)
     palikas_data = [
@@ -61,18 +61,18 @@ def create_taxonomy_data(apps, schema_editor):
         Weekday.objects.get_or_create(name=weekday)
 
 
-def reverse_taxonomy_data(apps, schema_editor):
+def reverse_core_data(apps, schema_editor):
     """
-    Reverse migration: Remove taxonomy data
+    Reverse migration: Remove core data
     """
     # Get model references
-    Palika = apps.get_model("taxonomy", "Palika")
-    OrganizationType = apps.get_model("taxonomy", "OrganizationType")
-    SchoolType = apps.get_model("taxonomy", "SchoolType")
-    Class = apps.get_model("taxonomy", "Class")
-    Weekday = apps.get_model("taxonomy", "Weekday")
+    Palika = apps.get_model("core", "Palika")
+    OrganizationType = apps.get_model("core", "OrganizationType")
+    SchoolType = apps.get_model("core", "SchoolType")
+    Class = apps.get_model("core", "Class")
+    Weekday = apps.get_model("core", "Weekday")
 
-    # Delete all taxonomy data (be careful with this!)
+    # Delete all core data (be careful with this!)
     Palika.objects.all().delete()
     OrganizationType.objects.all().delete()
     SchoolType.objects.all().delete()
@@ -83,12 +83,12 @@ def reverse_taxonomy_data(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("taxonomy", "0001_initial"),
+        ("core", "0001_initial"),
     ]
 
     operations = [
         migrations.RunPython(
-            create_taxonomy_data,
-            reverse_taxonomy_data,
+            create_core_data,
+            reverse_core_data,
         ),
     ]

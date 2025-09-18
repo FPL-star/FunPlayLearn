@@ -7,8 +7,8 @@ FunPlayLearn/
 ├─ core/                           # Django app - shared utilities
 │   ├─ __init__.py
 │   ├─ apps.py
-│   ├─ models.py                   # Abstract base classes, mixins
-│   ├─ admin.py                    # Site-wide admin customizations
+│   ├─ models.py                   # Abstract base classes, mixins, Grade, Weekday, Palika 
+│   ├─ admin.py                    # Site-wide admin customizations, reference data
 │   ├─ utils.py
 │   ├─ mixins.py
 │   └─ migrations/
@@ -47,17 +47,6 @@ FunPlayLearn/
 │   ├─ apps.py
 │   ├─ models.py                   # FPLMember
 │   ├─ admin.py                    # FPL program admin
-│   ├─ migrations/
-│   └─ tests.py
-├─ taxonomy/                       # Django app
-│   ├─ __init__.py
-│   ├─ apps.py
-│   ├─ models.py                   # Grade, Weekday, Palika
-│   ├─ admin.py                    # Reference data admin
-│   ├─ fixtures/                   # Initial data (palikas, grades, etc.)
-│   │   ├─ palikas.json
-│   │   ├─ grades.json
-│   │   └─ weekdays.json
 │   ├─ migrations/
 │   └─ tests.py
 ├─ mediafiles/                     # Django app
