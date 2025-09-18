@@ -1,0 +1,12 @@
+[
+  {"model": "core.class", "pk": 1, "fields": {"class_number": 1}},
+  {"model": "core.class", "pk": 2, "fields": {"class_number": 2}},
+  {"model": "core.class", "pk": 3, "fields": {"class_number": 3}},
+  {"model": "core.class", "pk": 4, "fields": {"class_number": 4}},
+  {"model": "core.class", "pk": 5, "fields": {"class_number": 5}},
+  {"model": "core.class", "pk": 6, "fields": {"class_number": 6}},
+  {"model": "core.class", "pk": 7, "fields": {"class_number": 7}},
+  {"model": "core.class", "pk": 8, "fields": {"class_number": 8}},
+  {"model": "core.class", "pk": 9, "fields": {"class_number": 9}},
+  {"model": "core.class", "pk": 10, "fields": {"class_number": 10}}
+]
