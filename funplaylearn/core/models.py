@@ -115,7 +115,6 @@ class Weekday(models.Model):
     def __str__(self):
         return self.name
 
-
 class Contact(models.Model):
     """
     Contact information for People and Organizations

@@ -222,3 +222,4 @@ class ContactModelTest(TestCase):
         contact.save()
         self.assertEqual(contact.email, "")
         self.assertEqual(contact.emergency_contact_name, "")
+
