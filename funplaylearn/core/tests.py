@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
-from core.models import Palika, OrganizationType, SchoolType, Class, Weekday
+from core.models import Palika, OrganizationType, SchoolType, Class, Weekday, Contact
 
 
 class PalikaModelTest(TestCase):
@@ -152,3 +152,74 @@ class WeekdayModelTest(TestCase):
         existing = list(Weekday.objects.all())
         self.assertTrue(all(isinstance(w, Weekday) for w in existing))
         self.assertEqual(existing[0].pk, 1)  # Monday should be first
+
+
+class ContactModelTest(TestCase):
+    """Test cases for Contact model"""
+
+    def setUp(self):
+        self.contact_data = {
+            "is_organization": False,
+            "email": "test@example.com",
+            "phone_country_code": "977",
+            "phone_number": "9801234567",
+            "address": "Kathmandu, Nepal",
+            "emergency_contact_name": "Ram Shrestha",
+            "emergency_contact_phone": "9812345678",
+            "emergency_contact_relationship": "Brother",
+        }
+
+    def test_create_contact(self):
+        """Test creating a Contact instance"""
+        contact = Contact.objects.create(**self.contact_data)
+        self.assertEqual(contact.is_organization, False)
+        self.assertEqual(contact.email, "test@example.com")
+        self.assertEqual(contact.phone_country_code, "977")
+        self.assertEqual(contact.phone_number, "9801234567")
+        self.assertEqual(contact.full_phone, "+977 9801234567")
+        self.assertEqual(
+            str(contact),
+            f"Person: [email]: {contact.email} [phone number]: {contact.full_phone}",
+        )
+
+    def test_emergency_contact_fields(self):
+        """Test emergency contact fields are saved correctly"""
+        contact = Contact.objects.create(**self.contact_data)
+        self.assertEqual(contact.emergency_contact_name, "Ram Shrestha")
+        self.assertEqual(contact.emergency_contact_phone, "9812345678")
+        self.assertEqual(contact.emergency_contact_relationship, "Brother")
+
+    def test_phone_number_validation(self):
+        """Test phone_number validation rejects invalid numbers"""
+        invalid_data = self.contact_data.copy()
+        invalid_data["phone_number"] = "abc123"
+        contact = Contact(**invalid_data)
+        with self.assertRaises(ValidationError):
+            contact.full_clean()  # triggers field validators
+
+    def test_phone_country_code_validation(self):
+        """Test phone_country_code validation rejects invalid codes"""
+        invalid_data = self.contact_data.copy()
+        invalid_data["phone_country_code"] = "97a"  # invalid
+        contact = Contact(**invalid_data)
+        with self.assertRaises(ValidationError):
+            contact.full_clean()
+
+    def test_optional_fields_can_be_blank(self):
+        """Test optional fields (email, emergency_contact_name, etc.) can be blank"""
+        blank_data = self.contact_data.copy()
+        blank_data.update(
+            {
+                "email": "",
+                "emergency_contact_name": "",
+                "emergency_contact_phone": "",
+                "emergency_contact_relationship": "",
+            }
+        )
+        contact = Contact(**blank_data)
+        # Should not raise errors
+        contact.full_clean()
+        contact.save()
+        self.assertEqual(contact.email, "")
+        self.assertEqual(contact.emergency_contact_name, "")
+

@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.exceptions import ValidationError
+from django.core.validators import RegexValidator
 
 # Note: https://docs.djangoproject.com/en/5.2/ref/models/fields/#:~:text=primary_key
 # Django will automatically add primary key fields
@@ -113,3 +114,88 @@ class Weekday(models.Model):
 
     def __str__(self):
         return self.name
+
+class Contact(models.Model):
+    """
+    Contact information for People and Organizations
+    """
+
+    PHONE_REGEX_VALIDATOR = RegexValidator(
+        r"^\d{3,15}$", "Enter a valid phone number (3-15 digits)"
+    )
+
+    class Meta:
+        verbose_name_plural = "Contacts"
+
+    is_organization = models.BooleanField(
+        default=False,
+        help_text="Set to True if contact is an organization, False if it is a person",
+    )
+    email = models.EmailField(
+        max_length=254,  # RFC email max length
+        blank=True,
+        null=False,
+        help_text="Email address (RFC 5321 max length 254 characters",
+    )
+    phone_country_code = models.CharField(
+        max_length=4,
+        default="977",  # Nepal country code
+        help_text="Country calling code digits (i.e. 977 for Nepal)",
+        validators=[RegexValidator(r"^\d{1,4}$", "Enter 1-4 digits for country code")],
+    )
+    phone_number = models.CharField(
+        max_length=15,
+        help_text="Local phone number without country code",
+        validators=[PHONE_REGEX_VALIDATOR],
+    )
+    address = models.TextField(help_text="Postal address")
+    emergency_contact_name = models.CharField(
+        max_length=255,
+        blank=True,
+        null=False,
+        help_text="Name of emergency contact person",
+    )
+    emergency_contact_phone = models.CharField(
+        max_length=15,
+        blank=True,
+        null=False,
+        help_text="Emergency contact phone number without country code",
+        validators=[PHONE_REGEX_VALIDATOR],
+    )
+    emergency_contact_relationship = models.CharField(
+        max_length=100,
+        blank=True,
+        null=False,
+        help_text="Relationship of the emergency contact",
+    )
+
+    def __str__(self):
+        label = "Organization" if self.is_organization else "Person"
+        return f"{label}: [email]: {self.email} [phone number]: {self.full_phone}"
+
+    @property
+    def full_phone(self):
+        """
+        Return full phone number (with country code) if possible
+        """
+        if self.phone_number:
+            return f"+{self.phone_country_code} {self.phone_number}"
+        return None
+
+
+class OrganizationContact(Contact):
+    """Proxy model to assign org contacts to organization app"""
+
+    class Meta:
+        proxy = True
+        verbose_name = "Organization Contact"
+        verbose_name_plural = "Organization Contacts"
+
+
+class PersonContact(Contact):
+    """Proxy model to assign person contacts to people app"""
+
+    class Meta:
+        proxy = True
+        verbose_name = "Person Contact"
+        verbose_name_plural = "Person Contacts"
