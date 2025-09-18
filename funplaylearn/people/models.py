@@ -1,8 +1,9 @@
 from django.db import models
-
 from core.models import Palika, Contact
 from core.utils import decrypt_field, encrypt_field
-from organization.models import Role
+
+# TODO: Uncomment when Role model is ready
+# from organization.models import Role
 
 
 class Person(models.Model):
@@ -26,18 +27,58 @@ class Person(models.Model):
 
     first_name = models.CharField(max_length=100, null=False, blank=False)
     last_name = models.CharField(max_length=100, null=False, blank=False)
-    role = models.ForeignKey(Role, on_delete=models.PROTECT, null=False, blank=False)
+    # TODO: Uncomment when Role model is ready
+    # role = models.ForeignKey(Role, on_delete=models.PROTECT, null=False, blank=False)
+    role = models.CharField(
+        max_length=100, default="Temporary Role"
+    )  # TODO: Remove when Role model is ready
     contact = models.OneToOneField(
         Contact, on_delete=models.PROTECT, null=True, blank=True
     )
-    bio = models.TextField(blank=True, null=False)
+    bio = models.TextField(blank=True, null=False, default="")
     gender = models.CharField(
         max_length=1, choices=GENDER_CHOICES, default="N", blank=True, null=False
     )
     photo = models.ImageField(upload_to="people/", blank=True, null=True)
 
     def __str__(self):
-        return f"{self.first_name} {self.last_name} [{self.role}]"
+        return f"{self.full_name} [{self.role}]"
+
+    @property
+    def full_name(self):
+        return f"{self.first_name} {self.last_name}"
+
+
+class FPLMember(models.Model):
+    """Table to track people who are FPLMembers"""
+
+    class Meta:
+        indexes = [
+            models.Index(fields=["person"], name="idx_fpl_person"),
+            models.Index(fields=["palika"], name="idx_fpl_palika"),
+            models.Index(fields=["palika", "active"], name="idx_palika_active"),
+        ]
+
+    person = models.OneToOneField(
+        Person,
+        on_delete=models.CASCADE,
+        related_name="fpl_member",
+    )
+    palika = models.ForeignKey(
+        Palika, on_delete=models.PROTECT, related_name="fpl_members"
+    )
+    start_date = models.DateField()
+    active = models.BooleanField(default=True)
+    agreement = models.BooleanField(default=False)
+
+    leave_date = models.DateField(null=True, blank=True)
+    sim_returned = models.BooleanField(default=False)
+    account_closed = models.BooleanField(default=False)
+    certificate_issued = models.BooleanField(default=False)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.person.full_name} [Active: {self.active}]"
 
 
 class PersonSensitiveData(models.Model):
@@ -66,12 +107,17 @@ class PersonSensitiveData(models.Model):
     }
 
     # Blood donation compatibility reverse mapping
-    BLOOD_RECIEVE_COMPATIBILITY = {}
+    BLOOD_RECEIVE_COMPATIBILITY = {}
     for donor, recipients in BLOOD_DONATION_COMPATIBILITY.items():
         for recipient in recipients:
-            BLOOD_RECIEVE_COMPATIBILITY.setdefault(recipient, []).append(donor)
+            BLOOD_RECEIVE_COMPATIBILITY.setdefault(recipient, []).append(donor)
 
-    person = models.OneToOneField(FPLMember, on_delete=models.PROTECT)
+    class Meta:
+        verbose_name = "Person Sensitive Data"
+        ordering = ["blood_type", "fpl_member"]
+        indexes = [models.Index(fields=["blood_type"], name="idx_blood_type")]
+
+    fpl_member = models.OneToOneField(FPLMember, on_delete=models.PROTECT)
     date_of_birth = models.DateField()
     blood_type = models.CharField(
         max_length=3, choices=BLOOD_TYPE_CHOICES, blank=False, null=False
@@ -103,9 +149,9 @@ class PersonSensitiveData(models.Model):
         return self.BLOOD_DONATION_COMPATIBILITY.get(self.blood_type, [])
 
     @property
-    def can_recieve_from(self):
-        """Return a list of blood types this person can recieve from"""
-        return self.BLOOD_RECIEVE_COMPATIBILITY.get(self.blood_type, [])
+    def can_receive_from(self):
+        """Return a list of blood types this person can receive from"""
+        return self.BLOOD_RECEIVE_COMPATIBILITY.get(self.blood_type, [])
 
     def __str__(self):
         donate_to = ", ".join(self.can_donate_to) if self.can_donate_to else "None"
@@ -113,8 +159,46 @@ class PersonSensitiveData(models.Model):
             ", ".join(self.can_receive_from) if self.can_receive_from else "None"
         )
         return (
-            f"{self.person} [Sensitive Data]\n"
+            f"{self.fpl_member.person} [Sensitive Data]\n"
             f"Blood type: {self.blood_type or 'N/A'}\n"
             f"Donates to: [{donate_to}]\n"
             f"Receives from: [{receive_from}]"
         )
+
+
+class PersonEducation(models.Model):
+    """Table to track education of an FPLMember"""
+
+    EDUCATION_LEVEL_CHOICES = [
+        ("SCHOOL", "School (up to grade 10)"),
+        ("PLUS_TWO", "Plus 2 / Higher Secondary"),
+        ("BA", "Bachelor's"),
+        ("MA", "Master's"),
+        ("PHD", "Ph.D."),
+        ("OTHER", "Other"),
+    ]
+
+    class Meta:
+        verbose_name = "Person Education"
+        ordering = ["fpl_member", "level", "is_current"]
+
+    fpl_member = models.OneToOneField(
+        FPLMember, on_delete=models.CASCADE, related_name="education"
+    )
+    level = models.CharField(
+        "Highest education level",
+        choices=EDUCATION_LEVEL_CHOICES,
+        blank=False,
+        null=False,
+        max_length=20,
+    )
+    institution = models.CharField(
+        "Institution of study", max_length=255, blank=True, null=False, default=""
+    )
+    field_of_study = models.CharField(
+        "Field of study", max_length=255, blank=True, null=False, default=""
+    )
+    is_current = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.get_level_display()} at {self.institution or '-'} [Currently studying: {self.is_current}]"
