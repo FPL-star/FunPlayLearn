@@ -1,6 +1,6 @@
-
 from django.db import models
-from django.core.exceptions import ValidationError
+from django.core.validators import URLValidator
+
 
 class Game(models.Model):
     """
@@ -10,31 +10,30 @@ class Game(models.Model):
     class Meta:
         verbose_name = "Game"
         verbose_name_plural = "Games"
-        ordering = ["game"]
+        ordering = ["name"]
 
-    game = models.CharField("Game Name", max_length=100, unique=True)
+    name = models.CharField("Game Name", max_length=100, unique=True)
     description = models.TextField("Game Description", blank=True)
     how_to = models.TextField("How to Play", blank=True)
     team_prep = models.TextField("Team Preparation", blank=True)
-    video_url = models.URLField("Video URL", blank=True)
-    image_url = models.URLField("Image URL", blank=True)
-    challenges = models.JSONField("Challenges", blank=True, default=dict)
-    questions = models.JSONField("Questions", blank=True, default=dict)
-    quality_checklist = models.JSONField("Quality Checklist", blank=True, default=dict)
-    materials_required = models.JSONField("Materials Required", blank=True, default=dict)
+    challenges = models.TextField("Challenges", blank=True)  # CSV
+    questions = models.TextField("Questions", blank=True)  # Expect "?" separate values
+    quality_checklist = models.TextField(
+        "Quality Checklist", blank=True
+    )  # Expect "?" separate values
+    materials = models.TextField("Materials Required", blank=True)  # CSV
+    video_url = models.URLField(
+        "Video URL", blank=True, unique=True, validators=[URLValidator()]
+    )
+    image = models.ImageField(
+        upload_to="games/",
+        blank=True,
+        null=True,
+        help_text="Upload an image of the game",
+    )
+    is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    is_active = models.BooleanField(default=True)
 
     def __str__(self):
-        return self.game
-
-    def clean(self):
-        """
-        Custom validation can go here.
-        For example, ensure video_url is valid or challenges are not empty.
-        """
-        super().clean()
-        if self.video_url and not self.video_url.startswith("http"):
-            raise ValidationError({"video_url": "Video URL must be a valid URL."})
-
+        return self.name
