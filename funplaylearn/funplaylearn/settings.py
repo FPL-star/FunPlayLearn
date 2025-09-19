@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     "core",
     "frontend",
     "games",
-	"organizations",
+    "people",
+	  "organizations",
 ]
 
 MIDDLEWARE = [
