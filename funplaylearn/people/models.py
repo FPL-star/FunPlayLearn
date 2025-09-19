@@ -1,9 +1,8 @@
 from django.db import models
+
 from core.models import Palika, Contact
 from core.utils import decrypt_field, encrypt_field
-
-# TODO: Uncomment when Role model is ready
-# from organization.models import Role
+from organization.models import Role
 
 
 class Person(models.Model):
@@ -27,11 +26,7 @@ class Person(models.Model):
 
     first_name = models.CharField(max_length=100, null=False, blank=False)
     last_name = models.CharField(max_length=100, null=False, blank=False)
-    # TODO: Uncomment when Role model is ready
-    # role = models.ForeignKey(Role, on_delete=models.PROTECT, null=False, blank=False)
-    role = models.CharField(
-        max_length=100, default="Temporary Role"
-    )  # TODO: Remove when Role model is ready
+    role = models.ForeignKey(Role, on_delete=models.PROTECT, null=False, blank=False)
     contact = models.OneToOneField(
         Contact, on_delete=models.PROTECT, null=True, blank=True
     )

@@ -7,16 +7,15 @@ from cryptography.fernet import Fernet
 
 from people.models import Person, FPLMember, PersonSensitiveData, PersonEducation
 from core.models import Palika, Contact
-
-# from organization.models import Role  # TODO: Uncomment when Role model is ready
+from organization.models import Role
 
 
 class PersonModelTest(TestCase):
     def setUp(self):
         """Set up test data"""
-        # TODO: When Role model is ready, replace with:
-        # self.role = Role.objects.create(name="Test Role", description="Test role description")
-        self.role = "Test Role"  # Temporary string for testing
+        self.role = Role.objects.create(
+            name="Test Role", description="Test role description"
+        )
         self.contact = Contact.objects.create(
             phone_number="9841234567", email="test@example.com"
         )
@@ -66,9 +65,7 @@ class PersonModelTest(TestCase):
 class FPLMemberModelTest(TestCase):
     def setUp(self):
         """Set up test data"""
-        # TODO: When Role model is ready, replace with:
-        # self.role = Role.objects.create(name="Member", description="Member role")
-        self.role = "Member"  # Temporary string for testing
+        self.role = Role.objects.create(name="Member", description="Member role")
         self.person = Person.objects.create(
             first_name="John",
             last_name="Doe",
@@ -114,11 +111,11 @@ class FPLMemberModelTest(TestCase):
 class PersonSensitiveDataModelTest(TestCase):
     def setUp(self):
         """Set up test data"""
-        # self.role = Role.objects.create(name="Member", description="Member role")  # TODO: Uncomment when Role model is ready
+        self.role = Role.objects.create(name="Member", description="Member role")
         self.person = Person.objects.create(
             first_name="John",
             last_name="Doe",
-            role="Member",  # TODO: Change back to role=self.role when Role model is ready
+            role=self.role,
         )
         self.palika = Palika.objects.create(palika="Latipur", short_name="LTT")
         self.fpl_member = FPLMember.objects.create(
@@ -233,11 +230,11 @@ class PersonSensitiveDataModelTest(TestCase):
 class PersonEducationModelTest(TestCase):
     def setUp(self):
         """Set up test data"""
-        # self.role = Role.objects.create(name="Member", description="Member role")  # TODO: Uncomment when Role model is ready
+        self.role = Role.objects.create(name="Member", description="Member role")
         self.person = Person.objects.create(
             first_name="Alice",
             last_name="Johnson",
-            role="Member",  # TODO: Change back to role=self.role when Role model is ready
+            role=self.role,
         )
         self.palika = Palika.objects.create(palika="Latipur", short_name="LTT")
         self.fpl_member = FPLMember.objects.create(
@@ -304,7 +301,7 @@ class ModelsIntegrationTest(TestCase):
 
     def setUp(self):
         """Set up complete test data"""
-        # self.role = Role.objects.create(name="Volunteer", description="Volunteer role")  # TODO: Uncomment when Role model is ready
+        self.role = Role.objects.create(name="Volunteer", description="Volunteer role")
         self.palika = Palika.objects.create(palika="Latipur", short_name="LTT")
         self.contact = Contact.objects.create(
             phone_number="9876543210", email="integration@test.com"
@@ -318,7 +315,7 @@ class ModelsIntegrationTest(TestCase):
             person = Person.objects.create(
                 first_name="Complete",
                 last_name="Test",
-                role="Volunteer",  # TODO: Change back to role=self.role when Role model is ready
+                role=self.role,
                 contact=self.contact,
                 bio="Integration test person",
                 gender="F",
