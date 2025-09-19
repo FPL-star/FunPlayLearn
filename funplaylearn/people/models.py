@@ -2,7 +2,7 @@ from django.db import models
 
 from core.models import Palika, Contact
 from core.utils import decrypt_field, encrypt_field
-from organization.models import Role
+from organizations.models import Role
 
 
 class Person(models.Model):
