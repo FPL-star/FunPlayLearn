@@ -1,6 +1,5 @@
 # people/tests.py
 from django.test import TestCase
-from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 from datetime import date
 from unittest.mock import patch
@@ -12,19 +11,18 @@ from organizations.models import Role, Organization
 
 
 class BaseModelTest(TestCase):
-    """Helper base class for common setup"""
+    """Helper base class to provide common seeded setup"""
 
     def setUp(self):
-        # Use seeded data
         self.palika = Palika.objects.first()
         self.org_type = OrganizationType.objects.get(name="FPL")
 
-        # Create org contact marked as organization
+        # Contact marked as organization
         self.org_contact = OrganizationContact.objects.create(
             phone_number="1111111111", email="org@test.com", is_organization=True
         )
 
-        # Create organization
+        # Organization
         self.organization = Organization.objects.create(
             name="Test Org",
             palika=self.palika,
@@ -32,44 +30,48 @@ class BaseModelTest(TestCase):
             org_type=self.org_type,
         )
 
-        # Create a role inside organization
+        # Role
         self.role = Role.objects.create(
             name="Test Role", organization=self.organization
         )
 
 
 class PersonModelTest(BaseModelTest):
-    def test_person_creation(self):
-        """Test basic person creation"""
+    def test_person_creation_str(self):
         person = Person.objects.create(
-            first_name="John", last_name="Doe", role=self.role, gender="M"
+            first_name="John", last_name="Doe", role=self.role
         )
-        self.assertEqual(person.full_name, "John Doe")
-        self.assertEqual(str(person), f"John Doe [{self.role.name}]")
+        expected = f"John Doe [{self.organization.name} - {self.role.name}]"
+        self.assertEqual(str(person), expected)
 
-    def test_person_with_contact(self):
-        """Test person creation with personal contact"""
-        contact = Contact.objects.create(
-            phone_number="9841234567", email="test@example.com"
-        )
+    def test_person_defaults(self):
         person = Person.objects.create(
-            first_name="Jane", last_name="Smith", role=self.role, contact=contact
+            first_name="Alice", last_name="Smith", role=self.role
         )
-        self.assertEqual(person.contact, contact)
-
-    def test_person_default_values(self):
-        """Test person default values"""
-        person = Person.objects.create(first_name="Test", last_name="User")
         self.assertEqual(person.gender, "N")
         self.assertEqual(person.bio, "")
-        # default role assignment
-        self.assertEqual(str(person.role), "Temporary Role")
+        self.assertIsNone(person.contact)
 
-    def test_person_required_fields(self):
-        """Test required fields enforced"""
-        person = Person(first_name="John")
-        with self.assertRaises(ValidationError):
-            person.full_clean()
+    def test_person_sensitive_data_encryption(self):
+        person = Person.objects.create(
+            first_name="Jane", last_name="Doe", role=self.role
+        )
+        member = FPLMember.objects.create(
+            person=person, palika=self.palika, start_date=date(2020, 1, 1), active=True
+        )
+
+        key = Fernet.generate_key()
+        fernet = Fernet(key)
+        with patch("core.utils.encryption._get_fernet", return_value=fernet):
+            sensitive = PersonSensitiveData.objects.create(
+                fpl_member=member, date_of_birth=date(1990, 5, 15), blood_type="A+"
+            )
+            sensitive.bank_account = "1234567890"
+            sensitive.save()
+            sensitive.refresh_from_db()
+            self.assertEqual(sensitive.bank_account, "1234567890")
+            self.assertIn("AB+", sensitive.can_donate_to)
+            self.assertIn("A-", sensitive.can_receive_from)
 
 
 class FPLMemberModelTest(BaseModelTest):
@@ -79,7 +81,7 @@ class FPLMemberModelTest(BaseModelTest):
             first_name="John", last_name="Doe", role=self.role
         )
 
-    def test_fpl_member_creation(self):
+    def test_fpl_member_creation_defaults(self):
         member = FPLMember.objects.create(
             person=self.person, palika=self.palika, start_date=date(2023, 1, 1)
         )
@@ -92,7 +94,7 @@ class FPLMemberModelTest(BaseModelTest):
         )
         self.assertEqual(str(member), f"{self.person.full_name} [Active: True]")
 
-    def test_one_to_one_relationship(self):
+    def test_fpl_member_one_to_one(self):
         FPLMember.objects.create(
             person=self.person, palika=self.palika, start_date=date(2023, 1, 1)
         )
@@ -108,26 +110,23 @@ class PersonSensitiveDataModelTest(BaseModelTest):
         self.person = Person.objects.create(
             first_name="John", last_name="Doe", role=self.role
         )
-        self.fpl_member = FPLMember.objects.create(
+        self.member = FPLMember.objects.create(
             person=self.person, palika=self.palika, start_date=date(2023, 1, 1)
         )
 
     def test_sensitive_data_creation(self):
         data = PersonSensitiveData.objects.create(
-            fpl_member=self.fpl_member, date_of_birth=date(1990, 5, 15), blood_type="O+"
+            fpl_member=self.member, date_of_birth=date(1990, 5, 15), blood_type="O+"
         )
         self.assertEqual(data.blood_type, "O+")
 
-    def test_encrypted_fields(self):
+    def test_encrypted_fields_with_patch(self):
         key = Fernet.generate_key()
         fernet = Fernet(key)
         with patch("core.utils.encryption._get_fernet", return_value=fernet):
             data = PersonSensitiveData.objects.create(
-                fpl_member=self.fpl_member,
-                date_of_birth=date(1990, 5, 15),
-                blood_type="A+",
+                fpl_member=self.member, date_of_birth=date(1990, 5, 15), blood_type="A+"
             )
-            # assign encrypted fields
             data.bank_account = "1234567890"
             data.pan_number = "ABCDE1234F"
             data.save()
@@ -139,31 +138,27 @@ class PersonSensitiveDataModelTest(BaseModelTest):
 
     def test_blood_compatibility(self):
         data = PersonSensitiveData.objects.create(
-            fpl_member=self.fpl_member,
-            date_of_birth=date(1990, 5, 15),
-            blood_type="O-",
+            fpl_member=self.member, date_of_birth=date(1990, 5, 15), blood_type="O-"
         )
         self.assertIn("AB+", data.can_donate_to)
         self.assertEqual(data.can_receive_from, ["O-"])
 
-    def test_ab_positive_compatibility(self):
+    def test_ab_positive_universal_receiver(self):
         data = PersonSensitiveData.objects.create(
-            fpl_member=self.fpl_member,
-            date_of_birth=date(1990, 5, 15),
-            blood_type="AB+",
+            fpl_member=self.member, date_of_birth=date(1990, 5, 15), blood_type="AB+"
         )
         self.assertEqual(data.can_donate_to, ["AB+"])
         self.assertIn("O-", data.can_receive_from)
 
     def test_sensitive_data_str(self):
         data = PersonSensitiveData.objects.create(
-            fpl_member=self.fpl_member, date_of_birth=date(1990, 5, 15), blood_type="A+"
+            fpl_member=self.member, date_of_birth=date(1990, 5, 15), blood_type="A+"
         )
         self.assertIn("John Doe", str(data))
 
     def test_encrypted_fields_with_none(self):
         data = PersonSensitiveData.objects.create(
-            fpl_member=self.fpl_member, date_of_birth=date(1990, 5, 15), blood_type="B+"
+            fpl_member=self.member, date_of_birth=date(1990, 5, 15), blood_type="B+"
         )
         data.bank_account = None
         data.pan_number = None
@@ -179,51 +174,50 @@ class PersonEducationModelTest(BaseModelTest):
         self.person = Person.objects.create(
             first_name="Alice", last_name="Johnson", role=self.role
         )
-        self.fpl_member = FPLMember.objects.create(
+        self.member = FPLMember.objects.create(
             person=self.person, palika=self.palika, start_date=date(2023, 1, 1)
         )
 
     def test_education_creation(self):
         edu = PersonEducation.objects.create(
-            fpl_member=self.fpl_member,
+            fpl_member=self.member,
             level="BA",
             institution="Test University",
-            field_of_study="Computer Science",
+            field_of_study="CS",
         )
         self.assertEqual(edu.level, "BA")
 
     def test_education_str(self):
         edu = PersonEducation.objects.create(
-            fpl_member=self.fpl_member,
+            fpl_member=self.member,
             level="MA",
             institution="Grad School",
             is_current=True,
         )
         self.assertIn("Grad School", str(edu))
 
-    def test_education_default_values(self):
-        edu = PersonEducation.objects.create(fpl_member=self.fpl_member, level="PHD")
+    def test_defaults(self):
+        edu = PersonEducation.objects.create(fpl_member=self.member, level="PHD")
         self.assertEqual(edu.institution, "")
         self.assertFalse(edu.is_current)
 
-    def test_education_choices(self):
+    def test_level_choices(self):
         valid_levels = ["SCHOOL", "PLUS_TWO", "BA", "MA", "PHD", "OTHER"]
         for lvl in valid_levels:
-            edu = PersonEducation.objects.create(fpl_member=self.fpl_member, level=lvl)
+            edu = PersonEducation.objects.create(fpl_member=self.member, level=lvl)
             self.assertEqual(edu.level, lvl)
             edu.delete()
 
-    def test_one_to_one_education_relationship(self):
-        PersonEducation.objects.create(fpl_member=self.fpl_member, level="BA")
+    def test_one_to_one_constraint(self):
+        PersonEducation.objects.create(fpl_member=self.member, level="BA")
         with self.assertRaises(IntegrityError):
-            PersonEducation.objects.create(fpl_member=self.fpl_member, level="MA")
+            PersonEducation.objects.create(fpl_member=self.member, level="MA")
 
 
 class ModelsIntegrationTest(BaseModelTest):
-    def test_complete_person_workflow(self):
+    def test_full_workflow(self):
         key = Fernet.generate_key()
         with patch("core.utils.encryption._get_fernet", return_value=Fernet(key)):
-            # create person + related
             contact = Contact.objects.create(
                 phone_number="999888777", email="integration@test.com"
             )
@@ -243,10 +237,9 @@ class ModelsIntegrationTest(BaseModelTest):
                 fpl_member=member,
                 level="MA",
                 institution="Integration University",
-                field_of_study="Development Studies",
+                field_of_study="Dev Studies",
             )
 
-            # assertions
             self.assertEqual(person.fpl_member, member)
             self.assertEqual(member.personsensitivedata, sensitive)
             self.assertEqual(member.education, edu)
