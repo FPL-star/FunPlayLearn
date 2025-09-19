@@ -18,7 +18,7 @@ def create_core_data(apps, schema_editor):
 
     # Create Palikas (replace with your actual data)
     palikas_data = [
-        ("Laltipur", "ltt"),
+        ("Lalitpur", "ltt"),
         ("Swoyambhu", "somu"),
         ("Hetauda", "htd"),
         ("Chabahil", "chbl"),

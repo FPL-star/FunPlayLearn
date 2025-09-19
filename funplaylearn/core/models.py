@@ -17,7 +17,7 @@ class Palika(models.Model):
         ordering = ["palika"]
 
     palika = models.CharField(
-        "Palika", max_length=100, unique=True, help_text="e.g., Latipur"
+        "Palika", max_length=100, unique=True, help_text="e.g., Lalitpur"
     )
     short_name = models.CharField(
         "Abbreviation", max_length=6, unique=True, help_text="e.g., LTT"
