@@ -15,7 +15,7 @@ class Organization(models.Model):
 
     palika = models.ForeignKey(
         Palika,
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
         help_text="Administrative division where organization is located",
         blank=True,
         null=True
@@ -27,9 +27,9 @@ class Organization(models.Model):
         help_text="Contact information for this organization"
     )
     
-    type = models.OneToOneField(
+    org_type = models.ForeignKey(
         OrganizationType, 
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
         help_text="Type of organization (School, College, NGO, FPL)"
     )
     
@@ -85,7 +85,10 @@ class Role(models.Model):
     class Meta:
         verbose_name = "Role"
         verbose_name_plural = "Roles"
-        ordering = ["organization__name", "name"]
+        ordering = ["name"]
+        constraints = [
+			models.UniqueConstraint(fields=['name', 'organization'], name='unique_role_per_organization')
+		]
 
     name = models.CharField(
         max_length=100,
