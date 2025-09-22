@@ -1,9 +1,19 @@
+# models.py
 from django.db import models
 from django.contrib.auth.models import User
 
-from core.models import Palika, PersonContact
+from core.models import Palika, Contact
 from core.utils import decrypt_field, encrypt_field
 from organizations.models import Role
+
+
+class PersonContact(Contact):
+    """Proxy model to assign person contacts to people app"""
+
+    class Meta:
+        proxy = True
+        verbose_name = "Person Contact"
+        verbose_name_plural = "Person Contacts"
 
 
 class Person(models.Model):
@@ -38,7 +48,7 @@ class Person(models.Model):
     photo = models.ImageField(upload_to="people/", blank=True, null=True)
 
     def __str__(self):
-        return f"{self.full_name} [{self.role}]"
+        return self.full_name
 
     @property
     def full_name(self):
