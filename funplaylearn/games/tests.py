@@ -1,35 +1,28 @@
 from django.test import TestCase
 from django.core.exceptions import ValidationError
 from games.models import Game
-import unittest
+
 
 class GameModelTest(TestCase):
 
     def setUp(self):
         """Create a sample game for testing"""
         self.game = Game.objects.create(
-            game="Chess",
+            name="Chess",
             description="A strategic board game",
             how_to="Move pieces according to rules",
             team_prep="No team prep needed",
             video_url="https://example.com/video",
-            image_url="https://example.com/image",
-            challenges={"time_limit": "60 mins"},
-            questions={"q1": "How many pieces?"},
-            quality_checklist={"rule_book": True},
-            materials_required={"board": 1, "pieces": 32},
+            challenges="time_limit,60 mins",
+            questions="How many pieces?",
+            quality_checklist="rule_book",
+            materials="board,32;pieces,32",  # simple CSV representation
         )
 
     def test_game_creation(self):
-        self.assertEqual(self.game.game, "Chess")
+        self.assertEqual(self.game.name, "Chess")
         self.assertEqual(self.game.description, "A strategic board game")
         self.assertTrue(self.game.is_active)
-
-    def test_json_fields(self):
-        self.assertEqual(self.game.challenges["time_limit"], "60 mins")
-        self.assertEqual(self.game.questions["q1"], "How many pieces?")
-        self.assertTrue(self.game.quality_checklist["rule_book"])
-        self.assertEqual(self.game.materials_required["pieces"], 32)
 
     def test_str_method(self):
         self.assertEqual(str(self.game), "Chess")
@@ -37,27 +30,28 @@ class GameModelTest(TestCase):
     def test_validation_video_url(self):
         self.game.video_url = "invalid-url"
         with self.assertRaises(ValidationError):
-            self.game.clean()
+            self.game.full_clean()  # .clean() only validates field-level, full_clean is safer
 
     def test_ordering(self):
-        Game.objects.create(game="Checkers")
+        Game.objects.create(name="Checkers")
         games = Game.objects.all()
-        self.assertEqual(list(games.values_list('game', flat=True)), ["Checkers", "Chess"])
+        # should be alphabetically by name
+        self.assertEqual(
+            list(games.values_list("name", flat=True)), ["Checkers", "Chess"]
+        )
 
     def test_blank_fields(self):
-        g = Game.objects.create(game="Solitaire")
+        g = Game.objects.create(name="Solitaire")
         self.assertEqual(g.description, "")
         self.assertEqual(g.how_to, "")
         self.assertEqual(g.team_prep, "")
         self.assertEqual(g.video_url, "")
-        self.assertEqual(g.image_url, "")
-        self.assertEqual(g.challenges, {})
-        self.assertEqual(g.questions, {})
+        self.assertEqual(g.challenges, "")
+        self.assertEqual(g.questions, "")
+        self.assertEqual(g.quality_checklist, "")
+        self.assertEqual(g.materials, "")
 
-# Custom runner to print a success message
-if __name__ == "__main__":
-    suite = unittest.defaultTestLoader.loadTestsFromTestCase(GameModelTest)
-    result = unittest.TextTestRunner(verbosity=2).run(suite)
-    if result.wasSuccessful():
-        print("\n🎉 All Game model tests passed successfully!")
-
+    # Optional: test that CSV-like fields can be parsed correctly
+    def test_csv_fields(self):
+        self.assertIn("time_limit", self.game.challenges)
+        self.assertIn("How many pieces?", self.game.questions)
