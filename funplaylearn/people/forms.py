@@ -1,15 +1,3 @@
-from django import forms
-from django.contrib.auth.models import User
-from django.utils.crypto import get_random_string
-from people.models import (
-    FPLMember,
-    Person,
-    PersonEducation,
-    PersonSensitiveData,
-    PersonContact,
-)
-from organizations.models import Role
-
 
 from django import forms
 from django.contrib.auth.models import User
