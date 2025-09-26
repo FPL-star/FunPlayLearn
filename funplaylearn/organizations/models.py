@@ -2,7 +2,6 @@ from django.db import models
 from django.core.exceptions import ValidationError
 from core.models import Palika, OrganizationContact, OrganizationType,SchoolType,Class
 
-
 class Organization(models.Model):
     """
     Model representing an organization with geographic location data.
@@ -71,11 +70,8 @@ class Organization(models.Model):
         """Custom validation to prevent creation of person contact as organization contact"""
         super().clean()
         
-        if self.contact and not self.contact.is_organization:
-            raise ValidationError(
-                {"contact": "Contact must be marked as organization contact (is_organization=True)"}
-            )
-
+        if self.contact_id and not self.contact.is_organization:
+            self.contact.is_organization=True
 
 class Role(models.Model):
     """
@@ -104,8 +100,8 @@ class Role(models.Model):
     def __str__(self):
         return f"{self.organization.name} - {self.name}"
     
-from django.db import models
 
+    
 class School(models.Model):
     """
     Model for organizations that are schools.
@@ -153,7 +149,6 @@ class School(models.Model):
     def __str__(self):
         return f"{self.organization.name}"
 
-
 class Schoolclass(models.Model):
     """
     Model representing a class (grade level) within a school.
@@ -178,4 +173,4 @@ class Schoolclass(models.Model):
         ]
 
     def __str__(self):
-        return f"{self.school.organization.name} - {self.name}"
+        return f"{self.school.organization.name} "
