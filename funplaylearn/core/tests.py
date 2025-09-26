@@ -17,7 +17,7 @@ class PalikaModelTest(TestCase):
     def test_palika_unique_palika(self):
         """Test that palika names must be unique (seeded data already has Lalitpur)"""
         with self.assertRaises(IntegrityError):
-            Palika.objects.create(palika="Laltipur", short_name="lal99")
+            Palika.objects.create(palika="Lalitpur", short_name="lal99")
 
     def test_palika_unique_short_name(self):
         """Test that short names must be unique (seeded data already has ltt)"""
@@ -222,4 +222,3 @@ class ContactModelTest(TestCase):
         contact.save()
         self.assertEqual(contact.email, "")
         self.assertEqual(contact.emergency_contact_name, "")
-

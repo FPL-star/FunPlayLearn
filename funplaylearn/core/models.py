@@ -115,6 +115,7 @@ class Weekday(models.Model):
     def __str__(self):
         return self.name
 
+
 class Contact(models.Model):
     """
     Contact information for People and Organizations
@@ -181,21 +182,3 @@ class Contact(models.Model):
         if self.phone_number:
             return f"+{self.phone_country_code} {self.phone_number}"
         return None
-
-
-class OrganizationContact(Contact):
-    """Proxy model to assign org contacts to organization app"""
-
-    class Meta:
-        proxy = True
-        verbose_name = "Organization Contact"
-        verbose_name_plural = "Organization Contacts"
-
-
-class PersonContact(Contact):
-    """Proxy model to assign person contacts to people app"""
-
-    class Meta:
-        proxy = True
-        verbose_name = "Person Contact"
-        verbose_name_plural = "Person Contacts"

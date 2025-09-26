@@ -70,3 +70,4 @@ class SchoolAdmin(admin.ModelAdmin):
 		),
 
 	)
+

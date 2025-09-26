@@ -35,21 +35,21 @@ class PalikaAdmin(admin.ModelAdmin):
         return obj.short_name.upper()
 
 
-@admin.register(OrganizationType)
-class OrganizationTypeAdmin(ReadOnlyModelAdmin):
-    pass
+# @admin.register(OrganizationType)
+# class OrganizationTypeAdmin(ReadOnlyModelAdmin):
+#     pass
 
 
-@admin.register(SchoolType)
-class SchoolTypeAdmin(ReadOnlyModelAdmin):
-    pass
+# @admin.register(SchoolType)
+# class SchoolTypeAdmin(ReadOnlyModelAdmin):
+#     pass
 
 
-@admin.register(Class)
-class ClassAdmin(ReadOnlyModelAdmin):
-    pass
+# @admin.register(Class)
+# class ClassAdmin(ReadOnlyModelAdmin):
+#     pass
 
 
-@admin.register(Weekday)
-class WeekdayAdmin(ReadOnlyModelAdmin):
-    pass
+# @admin.register(Weekday)
+# class WeekdayAdmin(ReadOnlyModelAdmin):
+#     pass
