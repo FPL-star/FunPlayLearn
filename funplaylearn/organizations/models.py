@@ -1,7 +1,8 @@
 from django.db import models
 from django.core.exceptions import ValidationError
 
-from core.models import Palika, OrganizationType, SchoolType, Class
+from core.models import Palika, OrganizationType, SchoolType, Class, Contact
+
 
 class OrganizationContact(Contact):
     """Proxy model to assign org contacts to organization app"""
@@ -10,6 +11,7 @@ class OrganizationContact(Contact):
         proxy = True
         verbose_name = "Organization Contact"
         verbose_name_plural = "Organization Contacts"
+
 
 class Organization(models.Model):
     """
@@ -69,7 +71,7 @@ class Organization(models.Model):
         """Custom validation to prevent creation of person contact as organization contact"""
         super().clean()
         if self.contact_id and not self.contact.is_organization:
-            self.contact.is_organization=True
+            self.contact.is_organization = True
 
 
 class Role(models.Model):
@@ -99,8 +101,8 @@ class Role(models.Model):
 
     def __str__(self):
         return f"{self.organization.name} - {self.name}"
-    
-    
+
+
 class School(models.Model):
     """
     Model for organizations that are schools.
@@ -109,35 +111,28 @@ class School(models.Model):
     organization = models.OneToOneField(
         Organization,
         on_delete=models.CASCADE,
-        related_name='org_school',
+        related_name="org_school",
     )
     school_type = models.ForeignKey(
         SchoolType,
         on_delete=models.PROTECT,
-        help_text="Type of school (e.g., Private, Government, Community)"
+        help_text="Type of school (e.g., Private, Government, Community)",
     )
     class_1_fee = models.IntegerField(
-        null=True, blank=True,
-        help_text="Fee for class 1"
+        null=True, blank=True, help_text="Fee for class 1"
     )
-    provides_food = models.BooleanField(
-        help_text="Whether the school provides food"
-    )
+    provides_food = models.BooleanField(help_text="Whether the school provides food")
     first_session_date = models.DateField(
-        null=False, blank=False,
-        help_text="Date of the first session"
+        null=False, blank=False, help_text="Date of the first session"
     )
     start_time_firsthalf = models.TimeField(
-        null=False, blank=False,
-        help_text="Start time for the first half of the day"
+        null=False, blank=False, help_text="Start time for the first half of the day"
     )
     start_time_secondhalf = models.TimeField(
-        null=False, blank=False,
-        help_text="Start time for the second half of the day"
+        null=False, blank=False, help_text="Start time for the second half of the day"
     )
     session_duration = models.IntegerField(
-        null=False, blank=False,
-        help_text="Duration of each session in minutes"
+        null=False, blank=False, help_text="Duration of each session in minutes"
     )
 
     class Meta:
@@ -148,6 +143,7 @@ class School(models.Model):
     def __str__(self):
         return f"{self.organization.name}"
 
+
 class Schoolclass(models.Model):
     """
     Model representing a class (grade level) within a school.
@@ -156,19 +152,23 @@ class Schoolclass(models.Model):
     school = models.ForeignKey(
         School,
         on_delete=models.PROTECT,
-        help_text="School this class is associated with"
+        help_text="School this class is associated with",
     )
-    Class = models.ForeignKey(Class, on_delete=models.PROTECT, help_text="Class/Grade level")
+    Class = models.ForeignKey(
+        Class, on_delete=models.PROTECT, help_text="Class/Grade level"
+    )
     max_students = models.IntegerField(
-        null=False, blank=False,
-        help_text="Maximum number of students in the class"
+        null=False, blank=False, help_text="Maximum number of students in the class"
     )
+
     class Meta:
         verbose_name = "School Class"
         verbose_name_plural = "School Classes"
         ordering = ["school"]
         constraints = [
-            models.UniqueConstraint(fields=['Class', 'school'], name='unique_class_per_school')
+            models.UniqueConstraint(
+                fields=["Class", "school"], name="unique_class_per_school"
+            )
         ]
 
     def __str__(self):
