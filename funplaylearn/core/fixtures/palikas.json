@@ -1,0 +1,74 @@
+[
+    {
+        "model": "core.palika",
+        "pk": 1,
+        "fields": {
+            "short_name": "llt",
+            "palika": "Lalitpur"
+        }
+    },
+    {
+        "model": "core.palika",
+        "pk": 2,
+        "fields": {
+            "short_name": "somu",
+            "palika": "Swoyambhu"
+        }
+    },
+    {
+        "model": "core.palika",
+        "pk": 3,
+        "fields": {
+            "short_name": "htd",
+            "palika": "Hetauda"
+        }
+    },
+    {
+        "model": "core.palika",
+        "pk": 4,
+        "fields": {
+            "short_name": "chbl",
+            "palika": "Chabahil"
+        }
+    },
+    {
+        "model": "core.palika",
+        "pk": 5,
+        "fields": {
+            "short_name": "kilkir",
+            "palika": "Kalanki-Kirtipur"
+        }
+    },
+    {
+        "model": "core.palika",
+        "pk": 6,
+        "fields": {
+            "short_name": "bsnt",
+            "palika": "Basantapur"
+        }
+    },
+    {
+        "model": "core.palika",
+        "pk": 7,
+        "fields": {
+            "short_name": "kotban",
+            "palika": "Koteshwor-Baneshwor"
+        }
+    },
+    {
+        "model": "core.palika",
+        "pk": 8,
+        "fields": {
+            "short_name": "bhkt",
+            "palika": "Bhaktapur"
+        }
+    },
+    {
+        "model": "core.palika",
+        "pk": 9,
+        "fields": {
+            "short_name": "cpg",
+            "palika": "Chapagaun"
+        }
+    }
+]
