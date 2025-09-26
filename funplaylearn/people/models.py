@@ -1,8 +1,18 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 from core.models import Palika, Contact
 from core.utils import decrypt_field, encrypt_field
 from organizations.models import Role
+
+
+class PersonContact(Contact):
+    """Proxy model to assign person contacts to people app"""
+
+    class Meta:
+        proxy = True
+        verbose_name = "Person Contact"
+        verbose_name_plural = "Person Contacts"
 
 
 class Person(models.Model):
@@ -28,7 +38,7 @@ class Person(models.Model):
     last_name = models.CharField(max_length=100, null=False, blank=False)
     role = models.ForeignKey(Role, on_delete=models.PROTECT, null=False, blank=False)
     contact = models.OneToOneField(
-        Contact, on_delete=models.PROTECT, null=True, blank=True
+        PersonContact, on_delete=models.PROTECT, null=True, blank=True
     )
     bio = models.TextField(blank=True, null=False, default="")
     gender = models.CharField(
@@ -37,7 +47,7 @@ class Person(models.Model):
     photo = models.ImageField(upload_to="people/", blank=True, null=True)
 
     def __str__(self):
-        return f"{self.full_name} [{self.role}]"
+        return self.full_name
 
     @property
     def full_name(self):
@@ -48,12 +58,21 @@ class FPLMember(models.Model):
     """Table to track people who are FPLMembers"""
 
     class Meta:
+        verbose_name = "FPL Member"
+        verbose_name_plural = "FPL Members"
         indexes = [
             models.Index(fields=["person"], name="idx_fpl_person"),
             models.Index(fields=["palika"], name="idx_fpl_palika"),
             models.Index(fields=["palika", "active"], name="idx_palika_active"),
         ]
+        permissions = [
+            ("view_own_palika_members", "Can view members from own palika"),
+            ("add_own_palika_members", "Can add members to own palika"),
+            ("change_own_palika_members", "Can change members from own palika"),
+            ("delete_own_palika_members", "Can delete members from own palika"),
+        ]
 
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="fpl_user")
     person = models.OneToOneField(
         Person,
         on_delete=models.CASCADE,
