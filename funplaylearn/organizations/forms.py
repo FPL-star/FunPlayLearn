@@ -1,8 +1,8 @@
 from django import forms
 from django.core.exceptions import ValidationError
 from django.forms import inlineformset_factory
-from core.models import Palika, OrganizationContact, OrganizationType, SchoolType, Class
-from organizations.models import Organization, Role, School, Schoolclass
+from core.models import Palika, OrganizationType, SchoolType, Class
+from organizations.models import Organization, Role, School, Schoolclass,OrganizationContact
 
 
 class OrganizationForm(forms.ModelForm):
