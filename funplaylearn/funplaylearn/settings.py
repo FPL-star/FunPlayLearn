@@ -43,7 +43,6 @@ INSTALLED_APPS = [
     "games",
     "people",
 	  "organizations",
-	"sessions"
 ]
 
 MIDDLEWARE = [
