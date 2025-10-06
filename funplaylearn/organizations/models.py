@@ -1,7 +1,7 @@
 from django.db import models
 from django.core.exceptions import ValidationError
 
-from core.models import Palika, OrganizationType, SchoolType, Class,Contact
+from core.models import Palika, OrganizationType, SchoolType, Class
 
 class OrganizationContact(Contact):
     """Proxy model to assign org contacts to organization app"""
@@ -10,6 +10,7 @@ class OrganizationContact(Contact):
         proxy = True
         verbose_name = "Organization Contact"
         verbose_name_plural = "Organization Contacts"
+
 class Organization(models.Model):
     """
     Model representing an organization with geographic location data.
