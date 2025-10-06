@@ -1,7 +1,7 @@
 from django.db import models
 from django.core.exceptions import ValidationError
 
-from core.models import Palika, OrganizationType, SchoolType, Class
+from core.models import Palika, OrganizationType, SchoolType, Class,Contact
 
 class OrganizationContact(Contact):
     """Proxy model to assign org contacts to organization app"""

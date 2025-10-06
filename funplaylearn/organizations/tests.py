@@ -1,6 +1,6 @@
 from django.test import TestCase
-from core.models import Palika, OrganizationContact, OrganizationType
-from .models import Organization
+from core.models import Palika, OrganizationType
+from .models import Organization ,OrganizationContact
 
 
 class OrganizationModelTest(TestCase):

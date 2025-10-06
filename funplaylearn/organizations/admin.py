@@ -5,8 +5,8 @@ from django.utils.html import format_html
 from django.urls import reverse
 from django.utils.safestring import mark_safe
 from organizations.forms import OrganizationForm, SchoolForm
-from .models import Organization, Role, School, Schoolclass
-from core.models import Palika, OrganizationContact, OrganizationType, SchoolType, Class
+from .models import Organization, Role, School, Schoolclass,OrganizationType
+from core.models import Palika, SchoolType, Class
 
 
 class SchoolclassTabularInline(admin.TabularInline):
